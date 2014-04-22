@@ -12,17 +12,19 @@ class Xively(output.Output):
         self.FeedID = data["FeedID"]
     def outputData(self, dataPoints):
         arr = []
+        a = l = None
         try:
             for i in dataPoints:
                 # handle GPS data
                 if i["name"] == "Location":
-                    arr.append({"location": {"disposition": i["disposition"], "exposure": i["exposure"], "domain": "physical", "ele": i["altitude"], "lat": i["latitude"], "lon": i["longitude"]}})
+                    l = ({"disposition": i["disposition"], "name": i["location"], "exposure": i["exposure"], "domain": "physical", "ele": i["altitude"], "lat": i["latitude"], "lon": i["longitude"]})
                 else:
                     arr.append({"id": i["name"], "current_value": i["value"]})
-            a = json.dumps({"version": "1.0.0", "datastreams": arr})
+            a = json.dumps({"version": "1.0.0", "datastreams": arr, "location": l})
+            # print("Xively output: [%s]" % (a,))
             z = requests.put("https://api.xively.com/v2/feeds/" + self.FeedID + ".json", headers = {"X-ApiKey":self.APIKey}, data = a)
             if z.text != "":
-                print "Xively Error: " + z.text
+                print("Xively Error: %s" % z.text)
                 return False
             return True
         except Exception as e:
