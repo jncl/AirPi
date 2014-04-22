@@ -234,6 +234,7 @@ while True:
                     dataDict["altitude"] = val[2]
                     dataDict["disposition"] = val[3]
                     dataDict["exposure"] = val[4]
+                    dataDict["location"] = i.locnName
                     dataDict["name"] = i.valName
                     dataDict["sensor"] = i.sensorName
                 else:

@@ -2,8 +2,15 @@
 
 import sensor
 import GpsController
+from socket import gethostname
 
 gpsc = None # define gps data structure
+locns = {
+    "TS5" : "Middlesbrough",
+    "DL12" : "Eggleston",
+    "TA1" : "Taunton",
+    "CAR" : "Mobile"
+}
 
 class GPS(sensor.Sensor):
     requiredData = []
@@ -11,6 +18,7 @@ class GPS(sensor.Sensor):
     def __init__(self, data):
         self.sensorName = "MTK3339"
         self.valName = "Location"
+        self.locnName = locns[gethostname().split("-")[1]]
         # start the GPS data polling
         global gpsc
         try:
