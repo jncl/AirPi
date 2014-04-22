@@ -257,3 +257,7 @@ while True:
                     logger.info("Uploaded successfully")
                     logger.info("Failed to upload")
                 logger.error("Exception: %s" % e)
+        # wait for remainder of delayTime
+        waitTime = (delayTime - (time.time() - lastUpdated)) + 0.01
+        if waitTime > 0:
+            time.sleep(waitTime)
