@@ -175,6 +175,7 @@ class BMP085 :
       self._cal_AC2 = -72
       self._cal_AC1 = 408
       self._cal_AC4 = 32741
+      self._cal_MB = -32767
       self.mode = self.__BMP085_ULTRALOWPOWER
       if (self.debug):
         self.showCalibrationData()
@@ -191,7 +192,7 @@ class BMP085 :
 
     # Pressure Calculations
     B6 = B5 - 4000
-    X1 = (self._cal_B2 * (B6 * B6) >> 12) >> 11
+    X1 = (self._cal_B2 * ((B6 * B6) >> 12)) >> 11
     X2 = (self._cal_AC2 * B6) >> 11
     X3 = X1 + X2
     B3 = (((self._cal_AC1 * 4 + X3) << self.mode) + 2) / 4
@@ -219,7 +220,7 @@ class BMP085 :
 
     X1 = (p >> 8) * (p >> 8)
     X1 = (X1 * 3038) >> 16
-    X2 = (-7375 * p) >> 16
+    X2 = (-7357 * p) >> 16
     if (self.debug):
       print "DBG: p  = %d" % (p)
       print "DBG: X1 = %d" % (X1)
