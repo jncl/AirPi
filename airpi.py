@@ -11,18 +11,23 @@ from sys import exit
 from sensors import sensor
 from outputs import output
 
+cfgdir = "/usr/local/etc/airpi"
+sensorcfg = os.path.join(cfgdir, 'sensors.cfg')
+outputscfg = os.path.join(cfgdir, 'outputs.cfg')
+settingscfg = os.path.join(cfgdir, 'settings.cfg')
+
 def get_subclasses(mod,cls):
 	for name, obj in inspect.getmembers(mod):
 		if hasattr(obj, "__bases__") and cls in obj.__bases__:
 			return obj
 
 
-if not os.path.isfile('sensors.cfg'):
-	print "Unable to access config file: sensors.cfg"
-	exit(1)
+if not os.path.isfile(sensorcfg):
+    print "Unable to access config file: sensors.cfg"
+    exit(1)
 
 sensorConfig = ConfigParser.SafeConfigParser()
-sensorConfig.read('sensors.cfg')
+sensorConfig.read(sensorcfg)
 
 sensorNames = sensorConfig.sections()
 
@@ -88,11 +93,12 @@ for i in sensorNames:
 		raise e
 
 
-if not os.path.isfile("outputs.cfg"):
-	print "Unable to access config file: outputs.cfg"
+if not os.path.isfile(outputscfg):
+    print "Unable to access config file: outputs.cfg"
+    exit(1)
 
 outputConfig = ConfigParser.SafeConfigParser()
-outputConfig.read("outputs.cfg")
+outputConfig.read(outputscfg)
 
 outputNames = outputConfig.sections()
 
@@ -160,11 +166,12 @@ for i in outputNames:
 		print("Error: Did not import output plugin " + i )
 		raise e
 
-if not os.path.isfile("settings.cfg"):
-	print "Unable to access config file: settings.cfg"
+if not os.path.isfile(settingscfg):
+    print "Unable to access config file: settings.cfg"
+    exit(1)
 
 mainConfig = ConfigParser.SafeConfigParser()
-mainConfig.read("settings.cfg")
+mainConfig.read(settingscfg)
 
 lastUpdated = 0
 delayTime = mainConfig.getfloat("Main","uploadDelay")
