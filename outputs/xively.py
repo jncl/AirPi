@@ -21,3 +21,7 @@ class Xively(output.Output):
 		except Exception:
 			return False
 		return True
+                # handle GPS data
+                if i["name"] == "Location":
+                    arr.append({"location": {"disposition": i["disposition"], "exposure": i["exposure"], "domain": "physical", "ele": i["altitude"], "lat": i["latitude"], "lon": i["longitude"]}})
+                else:

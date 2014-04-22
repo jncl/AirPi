@@ -8,6 +8,7 @@ import time
 import inspect
 import os
 from sys import exit
+from math import isnan
 from sensors import sensor
 from outputs import output
 
@@ -49,6 +50,7 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
 
 sensorPlugins = []
+gpsPluginInstance = None
 for i in sensorNames:
 	try:	
 		try:
@@ -109,6 +111,9 @@ for i in sensorNames:
                 logger.error("Error: could not import sensor module %s" % filename)
                 logger.error("Error: could not find a subclass of sensor.Sensor in module %s" % filename)
                     logger.error("Error: Missing required field %s for sensor plugin %s" % (requiredField, i))
+            # store sensorPlugins array length for GPS plugin
+            if i == "GPS":
+                gpsPluginInstance = instClass
             logger.info("Success: Loaded sensor plugin %s" % i)
         logger.error("Error: Did not import sensor plugin %s: [%s]" % (i, e))
 
@@ -236,7 +241,19 @@ while True:
 		time.sleep(1)
 		GPIO.output(greenPin,GPIO.LOW)
 		GPIO.output(redPin,GPIO.LOW)
+                if i == gpsPluginInstance:
+                    if isnan(val[2]): # this means it has no data to upload.
+                        continue
                     logger.debug("GPS output: %s" % (val,))
+                    # handle GPS data
+                    dataDict["latitude"] = val[0]
+                    dataDict["longitude"] = val[1]
+                    dataDict["altitude"] = val[2]
+                    dataDict["disposition"] = val[3]
+                    dataDict["exposure"] = val[4]
+                    dataDict["name"] = i.valName
+                    dataDict["sensor"] = i.sensorName
+                else:
                     logger.info("Uploaded successfully")
                     logger.info("Failed to upload")
                 logger.error("Exception: %s" % e)

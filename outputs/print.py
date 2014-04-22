@@ -12,3 +12,6 @@ class Print(output.Output):
 		for i in dataPoints:
 			print i["name"] + ": " + str(i["value"]) + " " + i["symbol"]
 		return True
+            if i["name"] == "Location":
+                print("GPS info: %s" % (i,))
+            else:
