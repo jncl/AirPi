@@ -11,6 +11,19 @@ from sys import exit
 from sensors import sensor
 from outputs import output
 
+# add logging support
+import logging, logging.handlers
+LOG_FILENAME = os.path.join("/var/log/airpi" , 'airpi.log')
+# Set up a specific logger with our desired output level
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+# create handler and add it to the logger
+handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes = 40960, backupCount = 5)
+logger.addHandler(handler)
+# create formatter and add it to the handler
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
 cfgdir = "/usr/local/etc/airpi"
 sensorcfg = os.path.join(cfgdir, 'sensors.cfg')
 outputscfg = os.path.join(cfgdir, 'outputs.cfg')
@@ -24,6 +37,7 @@ def get_subclasses(mod,cls):
 
 if not os.path.isfile(sensorcfg):
     print "Unable to access config file: sensors.cfg"
+    logger.error("Unable to access config file: %s" % sensorscfg)
     exit(1)
 
 sensorConfig = ConfigParser.SafeConfigParser()
@@ -91,10 +105,17 @@ for i in sensorNames:
 	except Exception as e: #add specific exception for missing module
 		print("Error: Did not import sensor plugin " + i )
 		raise e
+            logger.error("Error: no filename config option found for sensor plugin %s" % i)
+                logger.error("Error: could not import sensor module %s" % filename)
+                logger.error("Error: could not find a subclass of sensor.Sensor in module %s" % filename)
+                    logger.error("Error: Missing required field %s for sensor plugin %s" % (requiredField, i))
+            logger.info("Success: Loaded sensor plugin %s" % i)
+        logger.error("Error: Did not import sensor plugin %s: [%s]" % (i, e))
 
 
 if not os.path.isfile(outputscfg):
     print "Unable to access config file: outputs.cfg"
+    logger.error("Unable to access config file: %s" % outputscfg)
     exit(1)
 
 outputConfig = ConfigParser.SafeConfigParser()
@@ -165,9 +186,16 @@ for i in outputNames:
 	except Exception as e: #add specific exception for missing module
 		print("Error: Did not import output plugin " + i )
 		raise e
+            logger.error("Error: no filename config option found for output plugin %s" % i)
+                logger.error("Error: could not import output module %s" % filename)
+                logger.error("Error: could not find a subclass of output.Output in module %s" % filename)
+                    logger.error("Error: Missing required field %s for output plugin %s" % (requiredField, i))
+            logger.info("Success: Loaded output plugin %s" % i)
+        logger.error("Error: Did not import output plugin %s" % i)
 
 if not os.path.isfile(settingscfg):
     print "Unable to access config file: settings.cfg"
+    logger.error("Unable to access config file: %s" % settingscfg)
     exit(1)
 
 mainConfig = ConfigParser.SafeConfigParser()
@@ -208,3 +236,7 @@ while True:
 		time.sleep(1)
 		GPIO.output(greenPin,GPIO.LOW)
 		GPIO.output(redPin,GPIO.LOW)
+                    logger.debug("GPS output: %s" % (val,))
+                    logger.info("Uploaded successfully")
+                    logger.info("Failed to upload")
+                logger.error("Exception: %s" % e)
