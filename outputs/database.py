@@ -25,11 +25,11 @@ class Database(output.Output):
             conn.commit()
             # close the connection
             conn.close()
-        except sqlite3.OperationalError as e:
-            if "already exists" in e:
+        except sqlite3.OperationalError as oe:
+            if "already exists" in oe:
                 pass
             else:
-                raise e
+                raise oe
         except Exception as e:
             log.exception("Database create Exception {0}: {1}".format(e, dbName))
             raise e
