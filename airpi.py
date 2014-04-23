@@ -27,7 +27,7 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 
 # set log message level
-if len(sys.argv > 1):
+if len(sys.argv) > 1:
     if sys.argv[1] == "-d":
         log.setLevel(logging.DEBUG)
     else:
