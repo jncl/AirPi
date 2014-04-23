@@ -22,7 +22,6 @@ class GPS(sensor.Sensor):
         self.sensorName = "MTK3339"
         self.valName = "Location"
         self.locnName = locns[socket.gethostname().split("-")[1]]
-        log.debug("GPS __init__ socket default timeout {0}".format(socket.getdefaulttimeout()))
 
         # start polling the GPS data
         global gpsc
