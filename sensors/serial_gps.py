@@ -13,6 +13,7 @@ locns = {
 class GPS(sensor.Sensor):
     requiredData = []
     optionalData = []
+
     def __init__(self, data):
         self.sensorName = "MTK3339"
         self.valName = "Location"
@@ -30,8 +31,8 @@ class GPS(sensor.Sensor):
 
     def getVal(self):
         global gpsc
-        # we're mobile and outside if speed is above 1.0 m/s
-        if gpsc.fix.speed > 1.0:
+        # we're mobile and outside if locnName is "Mobile"
+        if self.locnName == "Mobile":
             return (gpsc.fix.latitude, gpsc.fix.longitude, gpsc.fix.altitude, "mobile", "outdoor")
         else:
             return (gpsc.fix.latitude, gpsc.fix.longitude, gpsc.fix.altitude, "fixed", "indoor")
