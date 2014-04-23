@@ -9,7 +9,7 @@ import ConfigParser
 import time
 import inspect
 import os
-from sys import exit
+
 from math import isnan
 from sensors import sensor
 from outputs import output
@@ -19,7 +19,6 @@ import logging, logging.handlers
 LOG_FILENAME = os.path.join("/var/log/airpi" , 'airpi.log')
 # Set up a specific logger with our desired output level
 log = logging.getLogger('AirPi')
-log.setLevel(logging.DEBUG)
 # create handler and add it to the log
 handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes = 40960, backupCount = 5)
 log.addHandler(handler)
@@ -27,6 +26,13 @@ log.addHandler(handler)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 
+# set log message level
+if sys.argv[1] == "-d":
+    log.setLevel(logging.DEBUG)
+else:
+    log.setLevel(logging.INFO)
+
+# configuration files
 cfgdir = "/usr/local/etc/airpi"
 sensorcfg = os.path.join(cfgdir, 'sensors.cfg')
 outputscfg = os.path.join(cfgdir, 'outputs.cfg')
@@ -52,21 +58,15 @@ def pandl(type, msg, vals=None):
 
 if not os.path.isfile(settingscfg):
     pandl("E", "Unable to access config file: {0}", settingscfg)
-    # print("Unable to access config file: settings.cfg")
-    # log.error("Unable to access config file: %s" % settingscfg)
-    exit(1)
+    sys.exit(1)
 
 if not os.path.isfile(sensorcfg):
     pandl("E", "Unable to access config file: {0}", sensorscfg)
-    # print("Unable to access config file: sensors.cfg")
-    # log.error("Unable to access config file: %s" % sensorscfg)
-    exit(1)
+    sys.exit(1)
 
 if not os.path.isfile(outputscfg):
     pandl("E", "Unable to access config file: {0}", outputscfg)
-    # print("Unable to access config file: outputs.cfg")
-    # log.error("Unable to access config file: %s" % outputscfg)
-    exit(1)
+    sys.exit(1)
 
 def get_subclasses(mod, cls):
     for name, obj in inspect.getmembers(mod):
@@ -85,8 +85,6 @@ for i in sensorNames:
             filename = sensorConfig.get(i,"filename")
         except Exception:
             pandl("Ex", "No filename config option found for sensor plugin {0}", vals=i)
-            # print("Error: no filename config option found for sensor plugin " + i)
-            # log.exception("Error: no filename config option found for sensor plugin %s" % i)
             raise
         try:
             enabled = sensorConfig.getboolean(i,"enabled")
@@ -99,8 +97,6 @@ for i in sensorNames:
                 mod = __import__('sensors.' + filename, fromlist = ['a']) #Why does this work?
             except Exception:
                 pandl("Ex", "Could not import sensor module {0}", vals=filename)
-                # print("Error: could not import sensor module " + filename)
-                # log.exception("Error: could not import sensor module %s" % filename)
                 raise
 
             try:
@@ -109,8 +105,6 @@ for i in sensorNames:
                     raise AttributeError
             except Exception:
                 pandl("Ex" ,"Could not find a subclass of sensor.Sensor in module {0}", vals=filename)
-                # print("Error: could not find a subclass of sensor.Sensor in module " + filename)
-                # log.exception("Error: could not find a subclass of sensor.Sensor in module %s" % filename)
                 raise
 
             try:
@@ -131,8 +125,6 @@ for i in sensorNames:
                     pluginData[requiredField] = sensorConfig.get(i, requiredField)
                 else:
                     pandl("E", "Missing required field {0} for sensor plugin {1}", vals=(requiredField, i))
-                    # print("Error: Missing required field '" + requiredField + "' for sensor plugin " + i)
-                    # log.error("Error: Missing required field %s for sensor plugin %s" % (requiredField, i))
                     raise MissingField
             for optionalField in opt:
                 if sensorConfig.has_option(i, optionalField):
@@ -143,12 +135,8 @@ for i in sensorNames:
             if i == "GPS":
                 gpsPluginInstance = instClass
             pandl("I", "Loaded sensor plugin {0}", vals=i)
-            # print("Success: Loaded sensor plugin " + i)
-            # log.info("Success: Loaded sensor plugin %s" % i)
     except Exception as e: # add specific exception for missing module
         pandl("Ex", "Failed to import sensor plugin {0}: [{1}]", vals=(i, e))
-        # print("Error: Did not import sensor plugin " + i)
-        # log.exception("Error: Did not import sensor plugin %s: [%s]" % (i, e))
         raise e
 
 # Outputs
@@ -163,8 +151,6 @@ for i in outputNames:
             filename = outputConfig.get(i, "filename")
         except Exception:
             pandl("Ex", "No filename config option found for output plugin {0}", vals=i)
-            # print("Error: no filename config option found for output plugin " + i)
-            # log.exception("Error: no filename config option found for output plugin %s" % i)
             raise
         try:
             enabled = outputConfig.getboolean(i, "enabled")
@@ -177,8 +163,6 @@ for i in outputNames:
                 mod = __import__('outputs.' + filename, fromlist = ['a']) #Why does this work?
             except Exception:
                 pandl("Ex", "Could not import output module {0}", vals=filename)
-                # print("Error: could not import output module " + filename)
-                # log.exception("Error: could not import output module %s" % filename)
                 raise
 
             try:
@@ -187,8 +171,6 @@ for i in outputNames:
                     raise AttributeError
             except Exception:
                 pandl("Ex","Could not find a subclass of output.Output in module {0}", vals=filename)
-                # print("Error: could not find a subclass of output.Output in module " + filename)
-                # log.exception("Error: could not find a subclass of output.Output in module %s" % filename)
                 raise
             try:
                 reqd = outputClass.requiredData
@@ -213,8 +195,6 @@ for i in outputNames:
                     pluginData[requiredField] = outputConfig.get(i, requiredField)
                 else:
                     pandl("E", "Missing required field {0} for output plugin {1}", vals=(requiredField, i))
-                    # print("Error: Missing required field '" + requiredField + "' for output plugin " + i)
-                    # log.error("Error: Missing required field %s for output plugin %s" % (requiredField, i))
                     raise MissingField
             for optionalField in opt:
                 if outputConfig.has_option(i, optionalField):
@@ -223,12 +203,8 @@ for i in outputNames:
             instClass.async = async
             outputPlugins.append(instClass)
             pandl("I", "Loaded output plugin {0}", vals=i)
-            # print("Success: Loaded output plugin " + i)
-            # log.info("Success: Loaded output plugin %s" % i)
     except Exception as e: # add specific exception for missing module
         pandl("Ex", "Failed to import output plugin {0}", vals=i)
-        # print("Error: Did not import output plugin " + i)
-        # log.exception("Error: Did not import output plugin %s" % i)
         raise e
 
 
@@ -283,19 +259,14 @@ while True:
                     working = working and i.outputData(data)
                 if working:
                     pandl("I", "Uploaded successfully")
-                    # print "Uploaded successfully"
-                    # log.info("Uploaded successfully")
                     GPIO.output(greenPin, GPIO.HIGH)
                 else:
                     pandl("I", "Failed to upload")
-                    # print "Failed to upload"
-                    # log.info("Failed to upload")
                     GPIO.output(redPin, GPIO.HIGH)
             except KeyboardInterrupt:
                 raise
             except Exception as e:
                 pandl("Ex", "Main Loop Exception: {0}", vals=e)
-                # log.exception("Exception: %s" % e)
             else:
                 # delay before turning off LED
                 time.sleep(1)
@@ -307,8 +278,8 @@ while True:
             time.sleep(waitTime)
     except KeyboardInterrupt:
         pandl("I", "KeyboardInterrupt detected")
-        # print("KeyboardInterrupt detected")
-        # log.info("KeyboardInterrupt detected")
         if gpsPluginInstance:
             gpsPluginInstance.stopController()
-        exit(1)
+
+        logging.shutdown()
+        sysexit(1)
