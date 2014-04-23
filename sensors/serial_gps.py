@@ -38,9 +38,9 @@ class GPS(sensor.Sensor):
         gpsData = [gpsc.fix.latitude, gpsc.fix.longitude, gpsc.fix.altitude]
         # we're mobile and outside if locnName is "Mobile"
         if self.locnName == "Mobile":
-            gpsData.append("mobile", "outdoor")
+            gpsData.extend(["mobile", "outdoor"])
         else:
-            gpsData.append("fixed", "indoor")
+            gpsData.extend(["fixed", "indoor"])
         log.debug("GPS data: %s" % str(gpsData))
         return gpsData
 
