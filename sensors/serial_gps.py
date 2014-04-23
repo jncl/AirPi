@@ -22,15 +22,15 @@ class GPS(sensor.Sensor):
         self.sensorName = "MTK3339"
         self.valName = "Location"
         self.locnName = locns[gethostname().split("-")[1]]
-        # start the GPS data polling
+        # start polling the GPS data
         global gpsc
         try:
             gpsc = GpsController.GpsController()
-            # start controller
+            # start the controller thread
             gpsc.start()
-        # Error
         except Exception as e:
-            print "Exception:", e
+            print("GPS __init__ Exception: %s" % e)
+            log.exception("GPS __init__ Exception %s" % e)
             raise
 
     def getVal(self):
@@ -46,7 +46,8 @@ class GPS(sensor.Sensor):
 
     def stopController(self):
         global gpsc
-        print "Stopping gps controller"
+        print("Stopping GPS controller")
+        log.info("Stopping GPS controller")
         gpsc.stopController()
         # wait for the thread to finish
         gpsc.join()
