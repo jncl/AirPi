@@ -43,6 +43,7 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
 
 gpsPluginInstance = None
+keepRunning = True
 
 def pandl(type, msg, vals=None):
     if vals != None:
@@ -73,6 +74,8 @@ def get_subclasses(mod, cls):
     for name, obj in inspect.getmembers(mod):
         if hasattr(obj, "__bases__") and cls in obj.__bases__:
             return obj
+
+class MissingField(Exception): pass
 
 # Inputs
 sensorConfig = ConfigParser.SafeConfigParser()
@@ -119,8 +122,6 @@ for i in sensorNames:
 
             pluginData = {}
 
-            class MissingField(Exception): pass
-
             for requiredField in reqd:
                 if sensorConfig.has_option(i, requiredField):
                     pluginData[requiredField] = sensorConfig.get(i, requiredField)
@@ -140,7 +141,7 @@ for i in sensorNames:
             pandl("I", "Loaded sensor plugin {0}", vals=i)
     except Exception as e: # add specific exception for missing module
         pandl("Ex", "Failed to import sensor plugin {0}: [{1}]", vals=(i, e))
-        raise e
+        break
 
 # Outputs
 outputConfig = ConfigParser.SafeConfigParser()
@@ -191,8 +192,6 @@ for i in outputNames:
 
             pluginData = {}
 
-            class MissingField(Exception): pass
-
             for requiredField in reqd:
                 if outputConfig.has_option(i, requiredField):
                     pluginData[requiredField] = outputConfig.get(i, requiredField)
@@ -210,8 +209,7 @@ for i in outputNames:
             pandl("I", "Loaded output plugin {0}", vals=i)
     except Exception as e: # add specific exception for missing module
         pandl("Ex", "Failed to import output plugin: {0} [{1}]", vals=(i, e))
-        raise e
-
+        break
 
 # Main Loop
 
@@ -225,7 +223,6 @@ GPIO.setup(redPin, GPIO.OUT, initial = GPIO.LOW)
 GPIO.setup(greenPin, GPIO.OUT, initial = GPIO.LOW)
 
 lastUpdated = 0
-keepRunning = True
 while keepRunning:
     try:
         curTime = time.time()
@@ -295,4 +292,4 @@ if gpsPluginInstance:
 logging.shutdown()
 
 # quit here
-sysexit(1)
+sys.exit(1)
