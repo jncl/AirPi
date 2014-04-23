@@ -1,9 +1,10 @@
 import output
 import requests
 import json
-import logging
 
-log = logging.getLogger(__name__)
+# add logging support
+import logging
+log = logging.getLogger('AirPi')
 
 class Xively(output.Output):
     requiredData = ["APIKey", "FeedID"]

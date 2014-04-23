@@ -2,6 +2,10 @@ import sensor
 import GpsController
 from socket import gethostname
 
+# add logging support
+import logging
+log = logging.getLogger('AirPi')
+
 gpsc = None # define gps data structure
 locns = {
     "TS5" : "Middlesbrough",
@@ -31,11 +35,14 @@ class GPS(sensor.Sensor):
 
     def getVal(self):
         global gpsc
+        gpsData = (gpsc.fix.latitude, gpsc.fix.longitude, gpsc.fix.altitude)
         # we're mobile and outside if locnName is "Mobile"
         if self.locnName == "Mobile":
-            return (gpsc.fix.latitude, gpsc.fix.longitude, gpsc.fix.altitude, "mobile", "outdoor")
+            gpsData.append("mobile", "outdoor")
         else:
-            return (gpsc.fix.latitude, gpsc.fix.longitude, gpsc.fix.altitude, "fixed", "indoor")
+            gpsData.append("fixed", "indoor")
+        log.debug("GPS data: %s" % (gpsData,))
+        return gpsData
 
     def stopController(self):
         global gpsc
