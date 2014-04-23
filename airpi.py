@@ -203,9 +203,6 @@ for i in outputNames:
             for optionalField in opt:
                 if outputConfig.has_option(i, optionalField):
                     pluginData[optionalField] = outputConfig.get(i, optionalField)
-                if optionalField == "gpsLocn":
-                    if gpsPluginInstance:
-                        pluginData[optionalField] = gpsPluginInstance.locnName
 
             instClass = outputClass(pluginData)
             instClass.async = async
