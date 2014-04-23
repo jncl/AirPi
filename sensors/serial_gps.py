@@ -35,13 +35,13 @@ class GPS(sensor.Sensor):
 
     def getVal(self):
         global gpsc
-        gpsData = (gpsc.fix.latitude, gpsc.fix.longitude, gpsc.fix.altitude)
+        gpsData = [gpsc.fix.latitude, gpsc.fix.longitude, gpsc.fix.altitude]
         # we're mobile and outside if locnName is "Mobile"
         if self.locnName == "Mobile":
             gpsData.append("mobile", "outdoor")
         else:
             gpsData.append("fixed", "indoor")
-        log.debug("GPS data: %s" % (gpsData,))
+        log.debug("GPS data: %s" % str(gpsData))
         return gpsData
 
     def stopController(self):
