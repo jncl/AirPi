@@ -8,15 +8,18 @@ log = logging.getLogger('AirPi')
 
 class Xively(output.Output):
     requiredData = ["APIKey", "FeedID"]
-    optionalData = []
+    optionalData = ["gpsLocn"]
 
     def __init__(self, data):
-        self.APIKey = data["APIKey"]
-        self.FeedID = data["FeedID"]
+        self.URL = "https://api.xively.com/v2/feeds/" + data["FeedID"] + ".json"
+        self.headers = ({"X-ApiKey": data["APIKey"]})
+        self.gpsLocn = None
+        if "gpsLocn" in data:
+            self.gpsLocn = data["gpsLocn"]
 
     def outputData(self, dataPoints):
         arr = []
-        a = l = None
+        a = l = z = None
 
         try:
             for i in dataPoints:
@@ -27,14 +30,18 @@ class Xively(output.Output):
                     arr.append({"id": i["name"], "current_value": i["value"]})
 
             a = json.dumps({"version": "1.0.0", "datastreams": arr, "location": l})
-            log.debug("Xively output: [%s]" % (a,))
+            log.debug("Xively output: [{0}]".format(a,))
 
-            z = requests.put("https://api.xively.com/v2/feeds/" + self.FeedID + ".json", headers = {"X-ApiKey":self.APIKey}, data = a, timeout = 5.0)
+            # add a timeout for Mobile location
+            if self.gpsLocn == "Mobile":
+                z = requests.put(self.URL, headers = self.headers, data = a, timeout = 5.0)
+            else:
+                z = requests.put(self.URL, headers = self.headers, data = a)
 
             if z.text != "":
-                log.error("Xively Error: %s" % z.text)
+                log.error("Xively Error: {0}".format(z.text))
                 return False
             return True
         except Exception as e:
-            log.exception("Xively Exception: %s" % e)
+            log.exception("Xively Exception: {0}".format(e))
             raise e

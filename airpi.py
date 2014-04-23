@@ -104,7 +104,7 @@ for i in sensorNames:
                 if sensorClass == None:
                     raise AttributeError
             except Exception:
-                pandl("Ex" ,"Could not find a subclass of sensor.Sensor in module {0}", vals=filename)
+                pandl("Ex", "Could not find a subclass of sensor.Sensor in module {0}", vals=filename)
                 raise
 
             try:
@@ -126,12 +126,14 @@ for i in sensorNames:
                 else:
                     pandl("E", "Missing required field {0} for sensor plugin {1}", vals=(requiredField, i))
                     raise MissingField
+
             for optionalField in opt:
                 if sensorConfig.has_option(i, optionalField):
                     pluginData[optionalField] = sensorConfig.get(i, optionalField)
+
             instClass = sensorClass(pluginData)
             sensorPlugins.append(instClass)
-            # store sensorPlugins array length for GPS plugin
+            # store sensorPlugins object for GPS plugin
             if i == "GPS":
                 gpsPluginInstance = instClass
             pandl("I", "Loaded sensor plugin {0}", vals=i)
@@ -196,15 +198,20 @@ for i in outputNames:
                 else:
                     pandl("E", "Missing required field {0} for output plugin {1}", vals=(requiredField, i))
                     raise MissingField
+
             for optionalField in opt:
                 if outputConfig.has_option(i, optionalField):
                     pluginData[optionalField] = outputConfig.get(i, optionalField)
+                if optionalField == "gpsLocn":
+                    if gpsPluginInstance:
+                        pluginData[optionalField] = gpsPluginInstance.locnName
+
             instClass = outputClass(pluginData)
             instClass.async = async
             outputPlugins.append(instClass)
             pandl("I", "Loaded output plugin {0}", vals=i)
     except Exception as e: # add specific exception for missing module
-        pandl("Ex", "Failed to import output plugin {0}", vals=i)
+        pandl("Ex", "Failed to import output plugin: {0} [{1}]", vals=(i, e))
         raise e
 
 
