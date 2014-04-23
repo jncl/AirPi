@@ -225,8 +225,8 @@ GPIO.setup(redPin, GPIO.OUT, initial = GPIO.LOW)
 GPIO.setup(greenPin, GPIO.OUT, initial = GPIO.LOW)
 
 lastUpdated = 0
-
-while True:
+keepRunning = True
+while keepRunning:
     try:
         curTime = time.time()
         if (curTime - lastUpdated) > delayTime:
@@ -272,6 +272,8 @@ while True:
                 raise
             except Exception as e:
                 pandl("Ex", "Main Loop Exception: {0}", vals=e)
+                keepRunning = False
+                raise
             else:
                 # delay before turning off LED
                 time.sleep(1)
@@ -283,8 +285,14 @@ while True:
             time.sleep(waitTime)
     except KeyboardInterrupt:
         pandl("I", "KeyboardInterrupt detected")
-        if gpsPluginInstance:
-            gpsPluginInstance.stopController()
+        keepRunning = False
 
-        logging.shutdown()
-        sysexit(1)
+# stop gps controller
+if gpsPluginInstance:
+    gpsPluginInstance.stopController()
+
+# close logging
+logging.shutdown()
+
+# quit here
+sysexit(1)
