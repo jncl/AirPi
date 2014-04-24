@@ -31,36 +31,16 @@ GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
 
 gpsPluginInstance = None
 
-def pandl(mtype, msg, mvals=None):
-    print("pandl msg [{0}]".format(msg))
-    print("pandl vals {0} [{1}]".format(type(mvals), mvals))
-
-    try:
-        if mvals != None:
-            msg = msg.format(*mvals) # use '*' to indicate mvals is a list of args
-    except Exception:
-        raise
-
-    print(msg)
-    if mtype == "I":
-        log.info(msg)
-    elif mtype == "D":
-        log.debug(msg)
-    elif mtype == "E":
-        log.error(msg)
-    elif mtype == "Ex":
-        log.exception(msg)
-
 if not os.path.isfile(settingscfg):
-    pandl("E", "Unable to access config file: {0}", settingscfg)
+    log.error("Unable to access config file: {0}".format(settingscfg))
     sys.exit(1)
 
 if not os.path.isfile(sensorcfg):
-    pandl("E", "Unable to access config file: {0}", sensorscfg)
+    log.error("Unable to access config file: {0}".format(sensorscfg))
     sys.exit(1)
 
 if not os.path.isfile(outputscfg):
-    pandl("E", "Unable to access config file: {0}", outputscfg)
+    log.error("Unable to access config file: {0}".format(outputscfg))
     sys.exit(1)
 
 def get_subclasses(mod, cls):
@@ -84,7 +64,7 @@ def getInputs():
             try:
                 filename = sensorConfig.get(i,"filename")
             except Exception:
-                pandl("Ex", "No filename config option found for sensor plugin {0}", i)
+                log.exception("No filename config option found for sensor plugin {0}".format(i))
                 raise
             try:
                 enabled = sensorConfig.getboolean(i,"enabled")
@@ -96,7 +76,7 @@ def getInputs():
                 try:
                     mod = __import__('sensors.' + filename, fromlist = ['a']) #Why does this work?
                 except Exception:
-                    pandl("Ex", "Could not import sensor module {0}", filename)
+                    log.exception("Could not import sensor module {0}".format(filename))
                     raise
 
                 try:
@@ -104,7 +84,7 @@ def getInputs():
                     if sensorClass == None:
                         raise AttributeError
                 except Exception:
-                    pandl("Ex", "Could not find a subclass of sensor.Sensor in module {0}", filename)
+                    log.exception("Could not find a subclass of sensor.Sensor in module {0}".format(filename))
                     raise
 
                 try:
@@ -122,7 +102,7 @@ def getInputs():
                     if sensorConfig.has_option(i, requiredField):
                         pluginData[requiredField] = sensorConfig.get(i, requiredField)
                     else:
-                        pandl("E", "Missing required field {0} for sensor plugin {1}", (requiredField, i))
+                        log.error("Missing required field {0} for sensor plugin {1}".format(requiredField, i))
                         raise MissingField
 
                 for optionalField in opt:
@@ -134,9 +114,9 @@ def getInputs():
                 # store sensorPlugins object for GPS plugin
                 if i == "GPS":
                     gpsPluginInstance = instClass
-                pandl("I", "Loaded sensor plugin {0}", i)
+                log.info("Loaded sensor plugin {0}".format(i))
         except Exception as e: # add specific exception for missing module
-            pandl("Ex", "Failed to load sensor plugin {0}", i)
+            log.exception("Failed to load sensor plugin {0}".format(i))
             raise
 
 # Outputs
@@ -152,7 +132,7 @@ def getOutputs():
             try:
                 filename = outputConfig.get(i, "filename")
             except Exception:
-                pandl("Ex", "No filename config option found for output plugin {0}", i)
+                log.exception("No filename config option found for output plugin {0}".format(i))
                 raise
             try:
                 enabled = outputConfig.getboolean(i, "enabled")
@@ -164,7 +144,7 @@ def getOutputs():
                 try:
                     mod = __import__('outputs.' + filename, fromlist = ['a']) #Why does this work?
                 except Exception:
-                    pandl("Ex", "Could not import output module {0}", filename)
+                    log.exception("Could not import output module {0}".format(filename))
                     raise
 
                 try:
@@ -172,7 +152,7 @@ def getOutputs():
                     if outputClass == None:
                         raise AttributeError
                 except Exception:
-                    pandl("Ex","Could not find a subclass of output.Output in module {0}", filename)
+                    log.exception("Could not find a subclass of output.Output in module {0}".format(filename))
                     raise
                 try:
                     reqd = outputClass.requiredData
@@ -194,7 +174,7 @@ def getOutputs():
                     if outputConfig.has_option(i, requiredField):
                         pluginData[requiredField] = outputConfig.get(i, requiredField)
                     else:
-                        pandl("E", "Missing required field {0} for output plugin {1}", (requiredField, i))
+                        log.error("Missing required field {0} for output plugin {1}".format(requiredField, i))
                         raise MissingField
 
                 for optionalField in opt:
@@ -204,9 +184,9 @@ def getOutputs():
                 instClass = outputClass(pluginData)
                 instClass.async = async
                 outputPlugins.append(instClass)
-                pandl("I", "Loaded output plugin {0}", i)
+                log.info("Loaded output plugin {0}".format(i))
         except Exception as e: # add specific exception for missing module
-            pandl("Ex", "Failed to load output plugin: {0}", i)
+            log.exception("Failed to load output plugin: {0}".format(i))
             raise
 
 # Main Loop
@@ -261,15 +241,15 @@ def getData():
                     for i in outputPlugins:
                         working = working and i.outputData(data)
                     if working:
-                        pandl("I", "Data output successfully")
+                        log.info("Data output successfully")
                         GPIO.output(greenPin, GPIO.HIGH)
                     else:
-                        pandl("I", "Data output unsuccessful")
+                        log.info("Data output unsuccessful")
                         GPIO.output(redPin, GPIO.HIGH)
                 except KeyboardInterrupt:
                     raise
                 except Exception as e:
-                    pandl("Ex", "Main Loop Exception: {0}", e)
+                    log.exception("Main Loop Exception: {0}".format(e))
                     keepRunning = False
                     raise
                 else:
@@ -282,7 +262,7 @@ def getData():
             if waitTime > 0:
                 time.sleep(waitTime)
         except KeyboardInterrupt:
-            pandl("I", "KeyboardInterrupt detected")
+            log.debug("KeyboardInterrupt detected")
             keepRunning = False
         except Exception as e:
             log.exception("Unexpected Exception {0}".format(e))
