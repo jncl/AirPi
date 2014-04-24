@@ -267,10 +267,10 @@ def getData():
                     for i in outputPlugins:
                         working = working and i.outputData(data)
                     if working:
-                        pandl("I", "Uploaded successfully")
+                        pandl("I", "Data output successfully")
                         GPIO.output(greenPin, GPIO.HIGH)
                     else:
-                        pandl("I", "Failed to upload")
+                        pandl("I", "Data output unsuccessful")
                         GPIO.output(redPin, GPIO.HIGH)
                 except KeyboardInterrupt:
                     raise
@@ -290,8 +290,12 @@ def getData():
         except KeyboardInterrupt:
             pandl("I", "KeyboardInterrupt detected")
             keepRunning = False
-        except Exception:
+        except Exception as e:
+            log.exception("Unexpected Exception {0}".format(e))
             keepRunning = False
+            raise
+        # catch all
+        except:
             raise
 
 
@@ -309,7 +313,7 @@ if __name__ == "__main__":
             getData()
         except Exception, e:
             # Need to handle a SystemExit
-            log.exception("Error: {0}".format(e))
+            log.exception("Exception caught: {0}".format(e))
             sys.exit(1)
     finally:
         # stop gps controller
