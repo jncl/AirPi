@@ -42,7 +42,7 @@ class Database(output.Output):
 
         for i in dataPoints:
             # handle GPS data
-            if i["name"] == "Location":
+            if i["type"] == "Location":
                 lData = json.dumps(i)
             else:
                 arr.append(i)
