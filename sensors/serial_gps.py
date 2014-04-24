@@ -4,7 +4,7 @@ import socket
 
 # add logging support
 import logging
-log = logging.getLogger('airpi')
+mod_log = logging.getLogger('airpi.serial_gps')
 
 locns = {
     "TS5" : "Middlesbrough",
@@ -19,6 +19,7 @@ class GPS(sensor.Sensor):
     gpsc = None
 
     def __init__(self, data):
+        self.log = logging.getLogger('airpi.serial_gps')
         self.sensorName = "MTK3339"
         self.valType = "Location"
         self.locnName = locns[socket.gethostname().split("-")[1]]
@@ -29,7 +30,7 @@ class GPS(sensor.Sensor):
             # start the controller thread
             self.gpsc.start()
         except Exception as e:
-            log.error("GPS __init__ Exception: {0}".format(e))
+            self.log.error("GPS __init__ Exception: {0}".format(e))
             raise
 
     def getVal(self):
@@ -41,12 +42,12 @@ class GPS(sensor.Sensor):
         else:
             gpsData.extend(["fixed", "indoor"])
 
-        log.debug("GPS data: {0}".format(gpsData))
+        self.log.debug("GPS data: {0}".format(gpsData))
         return gpsData
 
     def stopController(self):
         print("Stopping GPS controller")
-        log.info("Stopping GPS controller")
+        self.log.info("Stopping GPS controller")
         self.gpsc.stopController()
         # wait for the thread to finish
         self.gpsc.join()

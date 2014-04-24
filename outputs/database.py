@@ -6,14 +6,15 @@ import json
 
 # add logging support
 import logging
-log = logging.getLogger('airpi')
+mod_log = logging.getLogger('airpi.database')
 
 class Database(output.Output):
     requiredData = ["dbPath"]
     optionalData = []
     dbName = None
-    
+
     def __init__(self, data):
+        self.log = logging.getLogger('airpi.database')
         self.dbName = os.path.join(data["dbPath"], 'airpi.db')
 
         try:
@@ -28,10 +29,10 @@ class Database(output.Output):
             if "already exists" in oe.message:
                 pass
             else:
-                log.error("Database OperationalError Exception: {0} - {1}".format(oe, self.dbName))
+                self.log.error("Database OperationalError Exception: {0} - {1}".format(oe, self.dbName))
                 raise
         except Exception as e:
-            log.error("Database create Exception: {0} - {1}".format(e, self.dbName))
+            self.log.error("Database create Exception: {0} - {1}".format(e, self.dbName))
             raise
 
     def outputData(self, dataPoints):
@@ -46,7 +47,7 @@ class Database(output.Output):
                 arr.append(i)
 
         sData = json.dumps(arr)
-        log.debug("Database input: [{0},{1}]".format(sData, lData))
+        self.log.debug("Database input: [{0},{1}]".format(sData, lData))
 
         try:
             conn = sqlite3.connect(self.dbName)
@@ -57,7 +58,7 @@ class Database(output.Output):
             # close the connection
             conn.close()
         except Exception as e:
-            log.error("Database insert Exception: {0}".format(e))
+            self.log.error("Database insert Exception: {0}".format(e))
             raise
         else:
             return True
