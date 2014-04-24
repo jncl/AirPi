@@ -29,8 +29,6 @@ settingscfg = os.path.join(cfgdir, 'settings.cfg')
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
 
-gpsPluginInstance = None
-
 def get_subclasses(mod, cls):
     for name, obj in inspect.getmembers(mod):
         if hasattr(obj, "__bases__") and cls in obj.__bases__:
@@ -40,9 +38,10 @@ class MissingField(Exception): pass
 
 # Inputs
 sensorPlugins = []
+gpsPluginInstance = None
 def getInputs():
+    global sensorPlugins, gpsPluginInstance
     log.debug("getInputs: {0}, {1}, {2}".format(len(sensorPlugins), len(outputPlugins), str(gpsPluginInstance)))
-    # global gpsPluginInstance, sensorPlugins
 
     sensorConfig = ConfigParser.SafeConfigParser()
     sensorConfig.read(sensorcfg)
@@ -111,8 +110,8 @@ def getInputs():
 # Outputs
 outputPlugins = []
 def getOutputs():
+    global outputPlugins
     log.debug("getOutputa: {0}, {1}, {2}".format(len(sensorPlugins), len(outputPlugins), str(gpsPluginInstance)))
-    # global outputPlugins
 
     outputConfig = ConfigParser.SafeConfigParser()
     outputConfig.read(outputscfg)
@@ -182,7 +181,6 @@ def getOutputs():
 # Main Loop
 def getData():
     log.debug("getData: {0}, {1}, {2}".format(len(sensorPlugins), len(outputPlugins), str(gpsPluginInstance)))
-    # global sensorPlugins, outputPlugins, gpsPluginInstance
 
     mainConfig = ConfigParser.SafeConfigParser()
     mainConfig.read(settingscfg)
@@ -269,7 +267,7 @@ def getData():
 
 def runAirPi():
 
-    # global log, gpsPluginInstance
+    global log
 
     # Set up a specific logger with our desired output level
     log = logging.getLogger('airpi')
