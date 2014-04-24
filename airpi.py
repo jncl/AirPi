@@ -19,7 +19,7 @@ from outputs import output
 import logging, logging.handlers
 LOG_FILENAME = os.path.join("/var/log/airpi" , 'airpi.log')
 # Set up a specific logger with our desired output level
-log = logging.getLogger('AirPi')
+log = logging.getLogger(__name__)
 # create handler and add it to the log
 handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes = 40960, backupCount = 5)
 log.addHandler(handler)
@@ -319,7 +319,7 @@ if __name__ == "__main__":
         except Exception as e:
             # Need to handle a SystemExit
             log.exception("Exception caught: {0}".format(e))
-            sys.exit(1)
+            # sys.exit(1)
     finally:
         # stop gps controller
         if gpsPluginInstance:

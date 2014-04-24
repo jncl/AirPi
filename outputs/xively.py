@@ -4,13 +4,13 @@ import json
 
 # add logging support
 import logging
-log = logging.getLogger('AirPi')
 
 class Xively(output.Output):
     requiredData = ["APIKey", "FeedID"]
     optionalData = []
 
     def __init__(self, data):
+        self.log = logging.getLogger(__name__)
         self.URL = "https://api.xively.com/v2/feeds/" + data["FeedID"] + ".json"
         self.headers = ({"X-ApiKey": data["APIKey"]})
 
@@ -30,14 +30,14 @@ class Xively(output.Output):
                     arr.append({"id": i["type"], "current_value": i["value"]})
 
             a = json.dumps({"version": "1.0.0", "datastreams": arr, "location": l})
-            log.debug("Xively output: [{0}]".format(a,))
+            self.log.debug("Xively output: [{0}]".format(a,))
 
             z = requests.put(self.URL, headers = self.headers, data = a)
 
             if z.text != "":
-                log.error("Xively Error: {0}".format(z.text))
+                self.log.error("Xively Error: {0}".format(z.text))
                 return False
             return True
         except Exception as e:
-            log.exception("Xively Exception: {0}".format(e))
+            self.log.exception("Xively Exception: {0}".format(e))
             raise
