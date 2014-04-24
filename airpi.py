@@ -1,6 +1,18 @@
 #!/usr/bin/env python
 
 #This file takes in inputs from a variety of sensor files, and outputs information to a variety of services
+
+# add logging support
+import logging, logging.handlers
+log = logging.getLogger('airpi')
+logfile = os.path.join("/var/log/airpi" , 'airpi.log')
+# create handler and add it to the log
+handler = logging.handlers.RotatingFileHandler(logfile, maxBytes = 40960, backupCount = 5)
+log.addHandler(handler)
+# create formatter and add it to the handler
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
 import sys
 sys.dont_write_bytecode = True
 
@@ -14,11 +26,6 @@ import platform
 from math import isnan
 from sensors import sensor
 from outputs import output
-
-# add logging support
-import logging, logging.handlers
-log     = None
-logfile = os.path.join("/var/log/airpi" , 'airpi.log')
 
 # configuration files
 cfgdir      = "/usr/local/etc/airpi"
@@ -269,21 +276,11 @@ def runAirPi():
 
     global log
 
-    # Set up a specific logger with our desired output level
-    log = logging.getLogger('airpi')
-    # create handler and add it to the log
-    handler = logging.handlers.RotatingFileHandler(logfile, maxBytes = 40960, backupCount = 5)
-    log.addHandler(handler)
-    # create formatter and add it to the handler
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-
     # set log message level
+    log.setLevel(logging.INFO)
     if len(sys.argv) > 1:
         if sys.argv[1] == "-d":
             log.setLevel(logging.DEBUG)
-        else:
-            log.setLevel(logging.INFO)
 
     log.debug("runAirPi: {0}, {1}".format(str(log), str(gpsPluginInstance)))
 
