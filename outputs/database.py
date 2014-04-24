@@ -43,9 +43,11 @@ class Database(output.Output):
         for i in dataPoints:
             # handle GPS data
             if i["name"] == "Location":
-                lData = json.dumps({"disposition": i["disposition"], "name": i["location"], "exposure": i["exposure"], "ele": i["altitude"], "lat": i["latitude"], "lon": i["longitude"], "sensor": i["sensor"]})
+                lData = json.dumps(i)
+                # lData = json.dumps({"disposition": i["disposition"], "location": i["location"], "exposure": i["exposure"], "altitude": i["altitude"], "latitude": i["latitude"], "longitude": i["longitude"], "sensor": i["sensor"]})
             else:
-                arr.append({"name": i["name"], "value": i["value"], "unit": i["unit"], "symbol": i["symbol"], "sensor": i["sensor"]})
+                arr.append(i)
+                # arr.append({"name": i["name"], "value": i["value"], "unit": i["unit"], "symbol": i["symbol"], "sensor": i["sensor"]})
 
         sData = json.dumps(arr)
         log.debug("Database input: [{0},{1}]".format(sData, lData))
