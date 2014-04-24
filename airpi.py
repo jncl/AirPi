@@ -2,6 +2,10 @@
 
 #This file takes in inputs from a variety of sensor files, and outputs information to a variety of services
 
+import sys
+sys.dont_write_bytecode = True
+import os
+
 # add logging support
 import logging, logging.handlers
 log = logging.getLogger('airpi')
@@ -13,14 +17,10 @@ log.addHandler(handler)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 
-import sys
-sys.dont_write_bytecode = True
-
 import RPi.GPIO as GPIO
 import ConfigParser
 import time
 import inspect
-import os
 import platform
 
 from math import isnan
