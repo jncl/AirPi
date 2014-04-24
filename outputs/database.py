@@ -26,6 +26,7 @@ class Database(output.Output):
             # close the connection
             conn.close()
         except sqlite3.OperationalError as oe:
+            log.exception("Database OperationalError Exception {0}: {1}".format(oe, dbName))
             if "already exists" in oe:
                 pass
             else:

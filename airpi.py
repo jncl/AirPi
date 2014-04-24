@@ -160,7 +160,7 @@ for i in outputNames:
         try:
             enabled = outputConfig.getboolean(i, "enabled")
         except Exception:
-            enabled = True
+            enabled = False
 
         #if enabled, load the plugin
         if enabled:
