@@ -80,6 +80,8 @@ class MissingField(Exception): pass
 # Inputs
 sensorPlugins = []
 def getInputs():
+    global gpsPluginInstance, sensorPlugins
+
     sensorConfig = ConfigParser.SafeConfigParser()
     sensorConfig.read(sensorcfg)
     sensorNames = sensorConfig.sections()
@@ -147,6 +149,8 @@ def getInputs():
 # Outputs
 outputPlugins = []
 def getOutputs():
+    global outputPlugins
+
     outputConfig = ConfigParser.SafeConfigParser()
     outputConfig.read(outputscfg)
     outputNames = outputConfig.sections()
