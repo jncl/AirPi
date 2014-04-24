@@ -18,7 +18,7 @@ class Database(output.Output):
         self.dbName = os.path.join(data["dbPath"], 'airpi.db')
 
         try:
-            conn = sqlite3.connect(dbName)
+            conn = sqlite3.connect(self.dbName)
              # create table
             conn.execute("CREATE TABLE airpi (timestamp, sensor_data, gps_data)")
             # save changes
