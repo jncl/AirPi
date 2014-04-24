@@ -50,7 +50,6 @@ class GPS(sensor.Sensor):
     def stopController(self):
         global gpsc
         print("Stopping GPS controller")
-        log.info("Stopping GPS controller")
         gpsc.stopController()
         # wait for the thread to finish
         gpsc.join()

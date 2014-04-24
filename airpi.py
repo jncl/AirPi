@@ -46,8 +46,12 @@ GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
 gpsPluginInstance = None
 
 def pandl(type, msg, vals=None):
-    if vals != None:
-        msg = msg.format(vals)
+    try:
+        if vals != None:
+            msg = msg.format(vals)
+    except Exception:
+        raise
+
     print(msg)
     if type == "I":
         log.info(msg)
@@ -143,7 +147,7 @@ def getInputs():
                     gpsPluginInstance = instClass
                 pandl("I", "Loaded sensor plugin {0}", vals=i)
         except Exception as e: # add specific exception for missing module
-            pandl("Ex", "Failed to import sensor plugin {0}: [{1}]", vals=(i, e))
+            pandl("Ex", "Failed to import sensor plugin {0}: [{1}]", vals=(i, e,))
             raise
 
 # Outputs
@@ -213,9 +217,7 @@ def getOutputs():
                 outputPlugins.append(instClass)
                 pandl("I", "Loaded output plugin {0}", vals=i)
         except Exception as e: # add specific exception for missing module
-            print("Output plugin exception: {0}, {1}".format(i, e))
-            log.info("Output plugin exception: {0}, {1}".format(i, e))
-            pandl("Ex", "Failed to import output plugin: {0} [{1}]", vals=(i, e))
+            pandl("Ex", "Failed to import output plugin: {0} [{1}]", vals=(i, e,))
             raise
 
 # Main Loop
