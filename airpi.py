@@ -46,6 +46,7 @@ GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
 gpsPluginInstance = None
 
 def pandl(type, msg, vals=None):
+    log.debug("pandl vals {0} [{1}]".format(type(vals), vals,))
     try:
         if vals != None:
             msg = msg.format(vals)
@@ -323,7 +324,9 @@ if __name__ == "__main__":
     finally:
         # stop gps controller
         if gpsPluginInstance:
+            log.info("Stopping gps controller")
             gpsPluginInstance.stopController()
+        log.info(">>>>>>>> AirPi ending <<<<<<<<")
         # Shutdown the logging system
         logging.shutdown()
         # Exit here
