@@ -39,5 +39,5 @@ class Xively(output.Output):
                 return False
             return True
         except Exception as e:
-            log.exception("Xively Exception: {0}".format(e))
+            log.error("Xively Exception: {0}".format(e))
             raise

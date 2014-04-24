@@ -30,7 +30,7 @@ class GPS(sensor.Sensor):
             # start the controller thread
             gpsc.start()
         except Exception as e:
-            log.exception("GPS __init__ Exception: {0}".format(e))
+            log.error("GPS __init__ Exception: {0}".format(e))
             raise
 
     def getVal(self):

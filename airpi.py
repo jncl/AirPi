@@ -64,7 +64,7 @@ def getInputs():
             try:
                 filename = sensorConfig.get(i,"filename")
             except Exception:
-                log.exception("No filename config option found for sensor plugin {0}".format(i))
+                log.error("No filename config option found for sensor plugin {0}".format(i))
                 raise
             try:
                 enabled = sensorConfig.getboolean(i,"enabled")
@@ -76,7 +76,7 @@ def getInputs():
                 try:
                     mod = __import__('sensors.' + filename, fromlist = ['a']) #Why does this work?
                 except Exception:
-                    log.exception("Could not import sensor module {0}".format(filename))
+                    log.error("Could not import sensor module {0}".format(filename))
                     raise
 
                 try:
@@ -84,7 +84,7 @@ def getInputs():
                     if sensorClass == None:
                         raise AttributeError
                 except Exception:
-                    log.exception("Could not find a subclass of sensor.Sensor in module {0}".format(filename))
+                    log.error("Could not find a subclass of sensor.Sensor in module {0}".format(filename))
                     raise
 
                 try:
@@ -115,8 +115,8 @@ def getInputs():
                 if i == "GPS":
                     gpsPluginInstance = instClass
                 log.info("Loaded sensor plugin {0}".format(i))
-        except Exception as e: # add specific exception for missing module
-            log.exception("Failed to load sensor plugin {0}".format(i))
+        except Exception:
+            log.error("Failed to load sensor plugin {0}".format(i))
             raise
 
 # Outputs
@@ -132,7 +132,7 @@ def getOutputs():
             try:
                 filename = outputConfig.get(i, "filename")
             except Exception:
-                log.exception("No filename config option found for output plugin {0}".format(i))
+                log.error("No filename config option found for output plugin {0}".format(i))
                 raise
             try:
                 enabled = outputConfig.getboolean(i, "enabled")
@@ -144,7 +144,7 @@ def getOutputs():
                 try:
                     mod = __import__('outputs.' + filename, fromlist = ['a']) #Why does this work?
                 except Exception:
-                    log.exception("Could not import output module {0}".format(filename))
+                    log.error("Could not import output module {0}".format(filename))
                     raise
 
                 try:
@@ -152,7 +152,7 @@ def getOutputs():
                     if outputClass == None:
                         raise AttributeError
                 except Exception:
-                    log.exception("Could not find a subclass of output.Output in module {0}".format(filename))
+                    log.error("Could not find a subclass of output.Output in module {0}".format(filename))
                     raise
                 try:
                     reqd = outputClass.requiredData
@@ -185,8 +185,8 @@ def getOutputs():
                 instClass.async = async
                 outputPlugins.append(instClass)
                 log.info("Loaded output plugin {0}".format(i))
-        except Exception as e: # add specific exception for missing module
-            log.exception("Failed to load output plugin: {0}".format(i))
+        except Exception:
+            log.error("Failed to load output plugin: {0}".format(i))
             raise
 
 # Main Loop
@@ -249,7 +249,7 @@ def getData():
                 except KeyboardInterrupt:
                     raise
                 except Exception as e:
-                    log.exception("Main Loop Exception: {0}".format(e))
+                    log.error("Main Loop Exception: {0}".format(e))
                     keepRunning = False
                     raise
                 else:
@@ -265,7 +265,7 @@ def getData():
             log.debug("KeyboardInterrupt detected")
             keepRunning = False
         except Exception as e:
-            log.exception("Unexpected Exception {0}".format(e))
+            log.error("Unexpected Exception {0}".format(e))
             keepRunning = False
             raise
         # catch all
@@ -314,10 +314,9 @@ def startAirPi():
     try:
         try:
             runAirPi()
-        except Exception as e:
-            # Need to handle a SystemExit
-            log.exception("AirPi Error: {0}".format(e))
-            sys.exit(1)
+        except Exception:
+            log.exception("AirPi Error caught")
+            # sys.exit(1)
     finally:
         # Shutdown the logging system
         logging.shutdown()

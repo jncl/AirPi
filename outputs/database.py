@@ -29,10 +29,10 @@ class Database(output.Output):
             if "already exists" in oe.message:
                 pass
             else:
-                log.exception("Database OperationalError Exception: {0} - {1}".format(oe, dbName))
+                log.error("Database OperationalError Exception: {0} - {1}".format(oe, dbName))
                 raise
         except Exception as e:
-            log.exception("Database create Exception: {0} - {1}".format(e, dbName))
+            log.error("Database create Exception: {0} - {1}".format(e, dbName))
             raise
 
     def outputData(self, dataPoints):
@@ -58,7 +58,7 @@ class Database(output.Output):
             # close the connection
             conn.close()
         except Exception as e:
-            log.exception("Database insert Exception: {0}".format(e))
+            log.error("Database insert Exception: {0}".format(e))
             raise
         else:
             return True
