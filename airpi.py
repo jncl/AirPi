@@ -45,22 +45,23 @@ GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
 
 gpsPluginInstance = None
 
-def pandl(type, msg, vals=None):
-    log.debug("pandl vals {0} [{1}]".format(type(vals), vals))
+def pandl(mtype, msg, mvals=None):
+    print("pandl vals {0} [{1}]".format(type(mvals), mvals))
+    log.debug("pandl vals {0} [{1}]".format(type(mvals), mvals))
     try:
-        if vals != None:
-            msg = msg.format(vals)
+        if mvals != None:
+            msg = msg.format(mvals)
     except Exception:
         raise
 
     print(msg)
-    if type == "I":
+    if mtype == "I":
         log.info(msg)
-    elif type == "D":
+    elif mtype == "D":
         log.debug(msg)
-    elif type == "E":
+    elif mtype == "E":
         log.error(msg)
-    elif type == "Ex":
+    elif mtype == "Ex":
         log.exception(msg)
 
 if not os.path.isfile(settingscfg):
