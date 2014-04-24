@@ -3,10 +3,9 @@ import GpsController
 import socket
 
 # add logging support
-import logging
-log = logging.getLogger('airpi')
+# import logging
+# log = logging.getLogger('airpi')
 
-gpsc = None # define gps data structure
 locns = {
     "TS5" : "Middlesbrough",
     "DL12" : "Eggleston",
@@ -17,25 +16,26 @@ locns = {
 class GPS(sensor.Sensor):
     requiredData = []
     optionalData = []
+    gpsc = None
 
     def __init__(self, data):
+        global log
         self.sensorName = "MTK3339"
         self.valType = "Location"
         self.locnName = locns[socket.gethostname().split("-")[1]]
 
         # start polling the GPS data
-        global gpsc
         try:
-            gpsc = GpsController.GpsController()
+            self.gpsc = GpsController.GpsController()
             # start the controller thread
-            gpsc.start()
+            self.gpsc.start()
         except Exception as e:
             log.error("GPS __init__ Exception: {0}".format(e))
             raise
 
     def getVal(self):
-        global gpsc
-        gpsData = [gpsc.fix.latitude, gpsc.fix.longitude, gpsc.fix.altitude, "physical"]
+        global log
+        gpsData = [self.gpsc.fix.latitude, self.gpsc.fix.longitude, self.gpsc.fix.altitude, "physical"]
 
         # we're mobile and outside if locnName is "Mobile"
         if self.locnName == "Mobile":
@@ -47,9 +47,9 @@ class GPS(sensor.Sensor):
         return gpsData
 
     def stopController(self):
-        global gpsc
+        global log
         print("Stopping GPS controller")
         log.info("Stopping GPS controller")
-        gpsc.stopController()
+        self.gpsc.stopController()
         # wait for the thread to finish
-        gpsc.join()
+        self.gpsc.join()

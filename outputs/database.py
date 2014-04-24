@@ -5,18 +5,19 @@ import sqlite3
 import json
 
 # add logging support
-import logging
-log = logging.getLogger('airpi')
+# import logging
+# log = logging.getLogger('airpi')
 
-dbName = None
 
 class Database(output.Output):
     requiredData = ["dbPath"]
     optionalData = []
-
+    dbName = None
+    
     def __init__(self, data):
-        global dbName
-        dbName = os.path.join(data["dbPath"], 'airpi.db')
+        global log
+        self.dbName = os.path.join(data["dbPath"], 'airpi.db')
+
         try:
             conn = sqlite3.connect(dbName)
              # create table
@@ -29,14 +30,14 @@ class Database(output.Output):
             if "already exists" in oe.message:
                 pass
             else:
-                log.error("Database OperationalError Exception: {0} - {1}".format(oe, dbName))
+                log.error("Database OperationalError Exception: {0} - {1}".format(oe, self.dbName))
                 raise
         except Exception as e:
-            log.error("Database create Exception: {0} - {1}".format(e, dbName))
+            log.error("Database create Exception: {0} - {1}".format(e, self.dbName))
             raise
 
     def outputData(self, dataPoints):
-        global dbName
+        global log
         arr = []
         sData = lData = None
 
@@ -49,8 +50,9 @@ class Database(output.Output):
 
         sData = json.dumps(arr)
         log.debug("Database input: [{0},{1}]".format(sData, lData))
+
         try:
-            conn = sqlite3.connect(dbName)
+            conn = sqlite3.connect(self.dbName)
             # add row to table
             conn.execute("insert into airpi values (?, ?, ?)", (str(datetime.datetime.now()), sData, lData))
             # save changes

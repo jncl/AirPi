@@ -3,8 +3,8 @@ import requests
 import json
 
 # add logging support
-import logging
-log = logging.getLogger('airpi')
+# import logging
+# log = logging.getLogger('airpi')
 
 class Xively(output.Output):
     requiredData = ["APIKey", "FeedID"]
@@ -15,6 +15,7 @@ class Xively(output.Output):
         self.headers = ({"X-ApiKey": data["APIKey"]})
 
     def outputData(self, dataPoints):
+        global log
         arr = []
         a = l = z = None
 
