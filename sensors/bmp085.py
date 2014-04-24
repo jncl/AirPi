@@ -8,7 +8,7 @@ class BMP085(sensor.Sensor):
 	def __init__(self, data):
 		self.sensorName = "BMP085"
 		if "temp" in data["measurement"].lower():
-			self.valName = "Temperature"
+			self.valType = "Temperature"
 			self.valUnit = "Celsius"
 			self.valSymbol = "C"
 			if "unit" in data:
@@ -16,7 +16,7 @@ class BMP085(sensor.Sensor):
 					self.valUnit = "Fahrenheit"
 					self.valSymbol = "F"
 		elif "pres" in data["measurement"].lower():
-			self.valName = "Pressure"
+			self.valType = "Pressure"
 			self.valSymbol = "hPa"
 			self.valUnit = "Hectopascal"
 			self.altitude = 0
@@ -34,12 +34,12 @@ class BMP085(sensor.Sensor):
 		return
 
 	def getVal(self):
-		if self.valName == "Temperature":
+		if self.valType == "Temperature":
 			temp = BMP085.bmpClass.readTemperature()
 			if self.valUnit == "Fahrenheit":
 				temp = temp * 1.8 + 32
 			return temp
-		elif self.valName == "Pressure":
+		elif self.valType == "Pressure":
 			if self.mslp:
 				return BMP085.bmpClass.readMSLPressure(self.altitude) * 0.01 #to convert to Hectopascals
 			else:

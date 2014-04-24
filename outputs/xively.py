@@ -21,10 +21,10 @@ class Xively(output.Output):
         try:
             for i in dataPoints:
                 # handle GPS data
-                if i["name"] == "Location":
                     l = ({"disposition": i["disposition"], "name": i["location"], "exposure": i["exposure"], "domain": "physical", "ele": i["altitude"], "lat": i["latitude"], "lon": i["longitude"]})
+                if i["type"] == "Location":
                 else:
-                    arr.append({"id": i["name"], "current_value": i["value"]})
+                    arr.append({"id": i["type"], "current_value": i["value"]})
 
             a = json.dumps({"version": "1.0.0", "datastreams": arr, "location": l})
             log.debug("Xively output: [{0}]".format(a,))

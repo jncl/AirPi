@@ -7,7 +7,7 @@ class Analogue(sensor.Sensor):
 	def __init__(self, data):
 		self.adc = mcp3008.MCP3008.sharedClass
 		self.adcPin = int(data["adcPin"])
-		self.valName = data["measurement"]
+		self.valType = data["measurement"]
 		self.sensorName = data["sensorName"]
 		self.pullUp, self.pullDown = None, None
 		if "pullUpResistance" in data:
@@ -16,7 +16,7 @@ class Analogue(sensor.Sensor):
 			self.pullDown = int(data["pullDownResistance"])
 		class ConfigError(Exception): pass
 		if self.pullUp != None and self.pullDown != None:
-			print "Please choose whether there is a pull up or pull down resistor for the " + self.valName + " measurement by only entering one of them into the settings file"
+			print "Please choose whether there is a pull up or pull down resistor for the " + self.valType + " measurement by only entering one of them into the settings file"
 			raise ConfigError
 		self.valUnit = "Ohms"
 		self.valSymbol = "Ohms"

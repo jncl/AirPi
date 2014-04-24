@@ -20,7 +20,7 @@ class GPS(sensor.Sensor):
 
     def __init__(self, data):
         self.sensorName = "MTK3339"
-        self.valName = "Location"
+        self.valType = "Location"
         self.locnName = locns[socket.gethostname().split("-")[1]]
 
         # start polling the GPS data

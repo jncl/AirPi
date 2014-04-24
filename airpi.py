@@ -252,6 +252,7 @@ def getData():
                         dataDict["exposure"] = val[4]
                         dataDict["location"] = i.locnName
                         dataDict["name"] = i.valName
+                        dataDict["type"] = i.valType
                         dataDict["sensor"] = i.sensorName
                     else:
                         if val == None: # this means it has no data to upload.
@@ -259,7 +260,7 @@ def getData():
                         dataDict["value"] = val
                         dataDict["unit"] = i.valUnit
                         dataDict["symbol"] = i.valSymbol
-                        dataDict["name"] = i.valName
+                        dataDict["type"] = i.valType
                         dataDict["sensor"] = i.sensorName
                     data.append(dataDict)
                 working = True

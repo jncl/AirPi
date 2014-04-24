@@ -12,7 +12,7 @@ class DHT22(sensor.Sensor):
 		self.sensorName = "DHT22"
 		self.pinNum = int(data["pinNumber"])
 		if "temp" in data["measurement"].lower():
-			self.valName = "Temperature"
+			self.valType = "Temperature"
 			self.valUnit = "Celsius"
 			self.valSymbol = "C"
 			if "unit" in data:
@@ -20,7 +20,7 @@ class DHT22(sensor.Sensor):
 					self.valUnit = "Fahrenheit"
 					self.valSymbol = "F"
 		elif "h" in data["measurement"].lower():
-			self.valName = "Relative_Humidity"
+			self.valType = "Relative_Humidity"
 			self.valSymbol = "%"
 			self.valUnit = "% Relative Humidity"
 		return
@@ -36,10 +36,10 @@ class DHT22(sensor.Sensor):
 				t, h = dhtreader.lastData
 			dhtreader.lastData = (t, h)
 			dhtreader.lastDataTime = time.time()
-		if self.valName == "Temperature":
+		if self.valType == "Temperature":
 			temp = t
 			if self.valUnit == "Fahrenheit":
 				temp = temp * 1.8 + 32
 			return temp
-		elif self.valName == "Relative_Humidity":
+		elif self.valType == "Relative_Humidity":
 			return h
