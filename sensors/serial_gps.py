@@ -4,6 +4,7 @@ import socket
 
 # add logging support
 import logging
+log = logging.getLogger('airpi')
 
 locns = {
     "TS5" : "Middlesbrough",
@@ -16,7 +17,6 @@ class GPS(sensor.Sensor):
     requiredData = []
     optionalData = []
     gpsc = None
-    log = logging.getLogger('airpi')
 
     def __init__(self, data):
         self.sensorName = "MTK3339"

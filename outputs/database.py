@@ -6,12 +6,12 @@ import json
 
 # add logging support
 import logging
+log = logging.getLogger('airpi')
 
 class Database(output.Output):
     requiredData = ["dbPath"]
     optionalData = []
     dbName = None
-    log = logging.getLogger('airpi')
     
     def __init__(self, data):
         self.dbName = os.path.join(data["dbPath"], 'airpi.db')
