@@ -36,7 +36,7 @@ class GPS(sensor.Sensor):
 
     def getVal(self):
         global gpsc
-        gpsData = [gpsc.fix.latitude, gpsc.fix.longitude, gpsc.fix.altitude]
+        gpsData = [gpsc.fix.latitude, gpsc.fix.longitude, gpsc.fix.altitude, "physical"]
 
         # we're mobile and outside if locnName is "Mobile"
         if self.locnName == "Mobile":

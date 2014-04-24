@@ -44,10 +44,8 @@ class Database(output.Output):
             # handle GPS data
             if i["name"] == "Location":
                 lData = json.dumps(i)
-                # lData = json.dumps({"disposition": i["disposition"], "location": i["location"], "exposure": i["exposure"], "altitude": i["altitude"], "latitude": i["latitude"], "longitude": i["longitude"], "sensor": i["sensor"]})
             else:
                 arr.append(i)
-                # arr.append({"name": i["name"], "value": i["value"], "unit": i["unit"], "symbol": i["symbol"], "sensor": i["sensor"]})
 
         sData = json.dumps(arr)
         log.debug("Database input: [{0},{1}]".format(sData, lData))

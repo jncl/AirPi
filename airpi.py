@@ -245,13 +245,13 @@ def getData():
                             continue
                         log.debug("GPS output: %s" % (val,))
                         # handle GPS data
-                        dataDict["latitude"] = val[0]
-                        dataDict["longitude"] = val[1]
-                        dataDict["altitude"] = val[2]
-                        dataDict["disposition"] = val[3]
-                        dataDict["exposure"] = val[4]
-                        dataDict["location"] = i.locnName
-                        dataDict["name"] = i.valName
+                        dataDict["lat"] = val[0]
+                        dataDict["lon"] = val[1]
+                        dataDict["ele"] = val[2]
+                        dataDict["domain"] = val[3]
+                        dataDict["disposition"] = val[4]
+                        dataDict["exposure"] = val[5]
+                        dataDict["name"] = i.locnName
                         dataDict["type"] = i.valType
                         dataDict["sensor"] = i.sensorName
                     else:
