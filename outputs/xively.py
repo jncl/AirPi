@@ -22,11 +22,10 @@ class Xively(output.Output):
             for i in dataPoints:
                 # handle GPS data
                 if i["type"] == "Location":
-                    j = dict(i)
+                    l = dict(i)
                     # remove elements not required by Xively
-                    del j["type"]
-                    del j["sensor"]
-                    l = json.dumps(j)
+                    del l["type"]
+                    del l["sensor"]
                     # l = ({"disposition": i["disposition"], "name": i["name"], "exposure": i["exposure"], "domain": i["domain"], "ele": i["ele"], "lat": i["lat"], "lon": i["lon"]})
                 else:
                     arr.append({"id": i["type"], "current_value": i["value"]})
