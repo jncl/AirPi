@@ -6,6 +6,7 @@ import json
 
 # add logging support
 import logging
+log = logging.getLogger('airpi')
 
 dbName = None
 
@@ -14,7 +15,6 @@ class Database(output.Output):
     optionalData = []
 
     def __init__(self, data):
-        self.log = logging.getLogger(__name__)
         global dbName
         dbName = os.path.join(data["dbPath"], 'airpi.db')
         try:
@@ -29,10 +29,10 @@ class Database(output.Output):
             if "already exists" in oe.message:
                 pass
             else:
-                self.log.exception("Database OperationalError Exception {0}: {1}".format(oe, dbName))
+                log.exception("Database OperationalError Exception: {0} - {1}".format(oe, dbName))
                 raise
         except Exception as e:
-            self.log.exception("Database create Exception {0}: {1}".format(e, dbName))
+            log.exception("Database create Exception: {0} - {1}".format(e, dbName))
             raise
 
     def outputData(self, dataPoints):
@@ -48,7 +48,7 @@ class Database(output.Output):
                 arr.append(i)
 
         sData = json.dumps(arr)
-        self.log.debug("Database input: [{0},{1}]".format(sData, lData))
+        log.debug("Database input: [{0},{1}]".format(sData, lData))
         try:
             conn = sqlite3.connect(dbName)
             # add row to table
@@ -58,7 +58,7 @@ class Database(output.Output):
             # close the connection
             conn.close()
         except Exception as e:
-            self.log.exception("Database insert Exception: {0}".format(e))
+            log.exception("Database insert Exception: {0}".format(e))
             raise
         else:
             return True

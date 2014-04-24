@@ -19,7 +19,7 @@ from outputs import output
 import logging, logging.handlers
 LOG_FILENAME = os.path.join("/var/log/airpi" , 'airpi.log')
 # Set up a specific logger with our desired output level
-log = logging.getLogger(__name__)
+log = logging.getLogger('airpi')
 # create handler and add it to the log
 handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes = 40960, backupCount = 5)
 log.addHandler(handler)
