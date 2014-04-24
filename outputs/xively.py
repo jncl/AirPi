@@ -40,4 +40,4 @@ class Xively(output.Output):
             return True
         except Exception as e:
             log.exception("Xively Exception: {0}".format(e))
-            raise e
+            raise

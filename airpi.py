@@ -144,7 +144,7 @@ def getInputs():
                 pandl("I", "Loaded sensor plugin {0}", vals=i)
         except Exception as e: # add specific exception for missing module
             pandl("Ex", "Failed to import sensor plugin {0}: [{1}]", vals=(i, e))
-            raise e
+            raise
 
 # Outputs
 outputPlugins = []
@@ -214,7 +214,7 @@ def getOutputs():
                 pandl("I", "Loaded output plugin {0}", vals=i)
         except Exception as e: # add specific exception for missing module
             pandl("Ex", "Failed to import output plugin: {0} [{1}]", vals=(i, e))
-            raise e
+            raise
 
 # Main Loop
 def getData():

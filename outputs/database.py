@@ -30,10 +30,10 @@ class Database(output.Output):
                 pass
             else:
                 log.exception("Database OperationalError Exception {0}: {1}".format(oe, dbName))
-                raise oe
+                raise
         except Exception as e:
             log.exception("Database create Exception {0}: {1}".format(e, dbName))
-            raise e
+            raise
 
     def outputData(self, dataPoints):
         global dbName
@@ -59,6 +59,6 @@ class Database(output.Output):
             conn.close()
         except Exception as e:
             log.exception("Database insert Exception: {0}".format(e))
-            raise e
+            raise
         else:
             return True
