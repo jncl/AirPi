@@ -31,18 +31,6 @@ GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
 
 gpsPluginInstance = None
 
-if not os.path.isfile(settingscfg):
-    log.error("Unable to access config file: {0}".format(settingscfg))
-    sys.exit(1)
-
-if not os.path.isfile(sensorcfg):
-    log.error("Unable to access config file: {0}".format(sensorscfg))
-    sys.exit(1)
-
-if not os.path.isfile(outputscfg):
-    log.error("Unable to access config file: {0}".format(outputscfg))
-    sys.exit(1)
-
 def get_subclasses(mod, cls):
     for name, obj in inspect.getmembers(mod):
         if hasattr(obj, "__bases__") and cls in obj.__bases__:
@@ -53,7 +41,8 @@ class MissingField(Exception): pass
 # Inputs
 sensorPlugins = []
 def getInputs():
-    global gpsPluginInstance, sensorPlugins
+    log.debug("getInputs: {0}, {1}, {2}".format(len(sensorPlugins), len(outputPlugins), str(gpsPluginInstance)))
+    # global gpsPluginInstance, sensorPlugins
 
     sensorConfig = ConfigParser.SafeConfigParser()
     sensorConfig.read(sensorcfg)
@@ -122,7 +111,8 @@ def getInputs():
 # Outputs
 outputPlugins = []
 def getOutputs():
-    global outputPlugins
+    log.debug("getOutputa: {0}, {1}, {2}".format(len(sensorPlugins), len(outputPlugins), str(gpsPluginInstance)))
+    # global outputPlugins
 
     outputConfig = ConfigParser.SafeConfigParser()
     outputConfig.read(outputscfg)
@@ -191,6 +181,9 @@ def getOutputs():
 
 # Main Loop
 def getData():
+    log.debug("getData: {0}, {1}, {2}".format(len(sensorPlugins), len(outputPlugins), str(gpsPluginInstance)))
+    # global sensorPlugins, outputPlugins, gpsPluginInstance
+
     mainConfig = ConfigParser.SafeConfigParser()
     mainConfig.read(settingscfg)
 
@@ -203,12 +196,14 @@ def getData():
     lastUpdated = 0
     keepRunning = True
 
-    while keepRunning:
-        try:
+    try:
+        while keepRunning:
             curTime = time.time()
+
             if (curTime - lastUpdated) > delayTime:
                 lastUpdated = curTime
                 data = []
+
                 #Collect the data from each sensor
                 for i in sensorPlugins:
                     dataDict = {}
@@ -236,6 +231,7 @@ def getData():
                         dataDict["type"]   = i.valType
                         dataDict["sensor"] = i.sensorName
                     data.append(dataDict)
+
                 working = True
                 try:
                     for i in outputPlugins:
@@ -257,24 +253,24 @@ def getData():
                     time.sleep(1)
                     GPIO.output(greenPin, GPIO.LOW)
                     GPIO.output(redPin, GPIO.LOW)
+
             # wait for remainder of delayTime
             waitTime = (delayTime - (time.time() - lastUpdated)) + 0.01
             if waitTime > 0:
                 time.sleep(waitTime)
-        except KeyboardInterrupt:
-            log.debug("KeyboardInterrupt detected")
-            keepRunning = False
-        except Exception as e:
-            log.error("Unexpected Exception {0}".format(e))
-            keepRunning = False
-            raise
-        # catch all
-        except:
-            raise
+
+    except KeyboardInterrupt:
+        log.debug("KeyboardInterrupt detected")
+        keepRunning = False
+    except Exception as e:
+        log.error("Unexpected Exception {0}".format(e))
+        keepRunning = False
+        raise
 
 def runAirPi():
+    log.debug("runAirPi: {0}, {1}".format(str(log), str(gpsPluginInstance)))
 
-    global log, gpsPluginInstance
+    # global log, gpsPluginInstance
 
     # Set up a specific logger with our desired output level
     log = logging.getLogger('airpi')
@@ -296,6 +292,15 @@ def runAirPi():
     log.info("Python Info: {0} - {1} - {2}\n{3}".format(platform.platform(), platform.python_version(), platform.python_build(), str(platform.uname())))
 
     try:
+        if not os.path.isfile(settingscfg):
+            raise IOError("Unable to access config file: {0}".format(settingscfg))
+
+        if not os.path.isfile(sensorcfg):
+            raise IOError("Unable to access config file: {0}".format(sensorscfg))
+
+        if not os.path.isfile(outputscfg):
+            raise IOError("Unable to access config file: {0}".format(outputscfg))
+
         log.debug("Getting Inputs")
         getInputs()
         log.debug("Getting Outputs")
@@ -310,12 +315,13 @@ def runAirPi():
             gpsPluginInstance.stopController()
 
 def startAirPi():
+    log.debug("startAirPi: {0}, {1}".format(str(log), str(gpsPluginInstance)))
 
     try:
         try:
             runAirPi()
         except Exception:
-            log.exception("AirPi Error caught")
+            log.exception("AirPi Exception:")
             # sys.exit(1)
     finally:
         # Shutdown the logging system
