@@ -213,7 +213,6 @@ def getOutputs():
             raise e
 
 # Main Loop
-keepRunning = True
 def getData():
     mainConfig = ConfigParser.SafeConfigParser()
     mainConfig.read(settingscfg)
@@ -225,6 +224,8 @@ def getData():
     GPIO.setup(greenPin, GPIO.OUT, initial = GPIO.LOW)
 
     lastUpdated = 0
+    keepRunning = True
+
     while keepRunning:
         try:
             curTime = time.time()
