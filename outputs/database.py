@@ -5,17 +5,15 @@ import sqlite3
 import json
 
 # add logging support
-# import logging
-# log = logging.getLogger('airpi')
-
+import logging
 
 class Database(output.Output):
     requiredData = ["dbPath"]
     optionalData = []
     dbName = None
+    log = logging.getLogger('airpi')
     
     def __init__(self, data):
-        global log
         self.dbName = os.path.join(data["dbPath"], 'airpi.db')
 
         try:
@@ -37,7 +35,6 @@ class Database(output.Output):
             raise
 
     def outputData(self, dataPoints):
-        global log
         arr = []
         sData = lData = None
 

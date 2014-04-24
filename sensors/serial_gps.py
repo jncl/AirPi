@@ -3,8 +3,7 @@ import GpsController
 import socket
 
 # add logging support
-# import logging
-# log = logging.getLogger('airpi')
+import logging
 
 locns = {
     "TS5" : "Middlesbrough",
@@ -17,9 +16,9 @@ class GPS(sensor.Sensor):
     requiredData = []
     optionalData = []
     gpsc = None
+    log = logging.getLogger('airpi')
 
     def __init__(self, data):
-        global log
         self.sensorName = "MTK3339"
         self.valType = "Location"
         self.locnName = locns[socket.gethostname().split("-")[1]]
@@ -34,7 +33,6 @@ class GPS(sensor.Sensor):
             raise
 
     def getVal(self):
-        global log
         gpsData = [self.gpsc.fix.latitude, self.gpsc.fix.longitude, self.gpsc.fix.altitude, "physical"]
 
         # we're mobile and outside if locnName is "Mobile"
@@ -47,7 +45,6 @@ class GPS(sensor.Sensor):
         return gpsData
 
     def stopController(self):
-        global log
         print("Stopping GPS controller")
         log.info("Stopping GPS controller")
         self.gpsc.stopController()
