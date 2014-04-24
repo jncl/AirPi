@@ -268,7 +268,6 @@ def getData():
         raise
 
 def runAirPi():
-    log.debug("runAirPi: {0}, {1}".format(str(log), str(gpsPluginInstance)))
 
     # global log, gpsPluginInstance
 
@@ -287,6 +286,8 @@ def runAirPi():
             log.setLevel(logging.DEBUG)
         else:
             log.setLevel(logging.INFO)
+
+    log.debug("runAirPi: {0}, {1}".format(str(log), str(gpsPluginInstance)))
 
     log.info(">>>>>>>> AirPi starting <<<<<<<<")
     log.info("Python Info: {0} - {1} - {2}\n{3}".format(platform.platform(), platform.python_version(), platform.python_build(), str(platform.uname())))
@@ -315,7 +316,6 @@ def runAirPi():
             gpsPluginInstance.stopController()
 
 def startAirPi():
-    log.debug("startAirPi: {0}, {1}".format(str(log), str(gpsPluginInstance)))
 
     try:
         try:
