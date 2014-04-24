@@ -46,7 +46,7 @@ GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
 gpsPluginInstance = None
 
 def pandl(type, msg, vals=None):
-    log.debug("pandl vals {0} [{1}]".format(type(vals), vals,))
+    log.debug("pandl vals {0} [{1}]".format(type(vals), vals))
     try:
         if vals != None:
             msg = msg.format(vals)
@@ -96,7 +96,7 @@ def getInputs():
             try:
                 filename = sensorConfig.get(i,"filename")
             except Exception:
-                pandl("Ex", "No filename config option found for sensor plugin {0}", vals=i)
+                pandl("Ex", "No filename config option found for sensor plugin {0}", i)
                 raise
             try:
                 enabled = sensorConfig.getboolean(i,"enabled")
@@ -108,7 +108,7 @@ def getInputs():
                 try:
                     mod = __import__('sensors.' + filename, fromlist = ['a']) #Why does this work?
                 except Exception:
-                    pandl("Ex", "Could not import sensor module {0}", vals=filename)
+                    pandl("Ex", "Could not import sensor module {0}", filename)
                     raise
 
                 try:
@@ -116,7 +116,7 @@ def getInputs():
                     if sensorClass == None:
                         raise AttributeError
                 except Exception:
-                    pandl("Ex", "Could not find a subclass of sensor.Sensor in module {0}", vals=filename)
+                    pandl("Ex", "Could not find a subclass of sensor.Sensor in module {0}", filename)
                     raise
 
                 try:
@@ -134,7 +134,7 @@ def getInputs():
                     if sensorConfig.has_option(i, requiredField):
                         pluginData[requiredField] = sensorConfig.get(i, requiredField)
                     else:
-                        pandl("E", "Missing required field {0} for sensor plugin {1}", vals=(requiredField, i))
+                        pandl("E", "Missing required field {0} for sensor plugin {1}", (requiredField, i))
                         raise MissingField
 
                 for optionalField in opt:
@@ -146,9 +146,9 @@ def getInputs():
                 # store sensorPlugins object for GPS plugin
                 if i == "GPS":
                     gpsPluginInstance = instClass
-                pandl("I", "Loaded sensor plugin {0}", vals=i)
+                pandl("I", "Loaded sensor plugin {0}", i)
         except Exception as e: # add specific exception for missing module
-            pandl("Ex", "Failed to import sensor plugin {0}: [{1}]", vals=(i, e,))
+            pandl("Ex", "Failed to import sensor plugin {0}: [{1}]", (i, e,))
             raise
 
 # Outputs
@@ -164,7 +164,7 @@ def getOutputs():
             try:
                 filename = outputConfig.get(i, "filename")
             except Exception:
-                pandl("Ex", "No filename config option found for output plugin {0}", vals=i)
+                pandl("Ex", "No filename config option found for output plugin {0}", i)
                 raise
             try:
                 enabled = outputConfig.getboolean(i, "enabled")
@@ -176,7 +176,7 @@ def getOutputs():
                 try:
                     mod = __import__('outputs.' + filename, fromlist = ['a']) #Why does this work?
                 except Exception:
-                    pandl("Ex", "Could not import output module {0}", vals=filename)
+                    pandl("Ex", "Could not import output module {0}", filename)
                     raise
 
                 try:
@@ -184,7 +184,7 @@ def getOutputs():
                     if outputClass == None:
                         raise AttributeError
                 except Exception:
-                    pandl("Ex","Could not find a subclass of output.Output in module {0}", vals=filename)
+                    pandl("Ex","Could not find a subclass of output.Output in module {0}", filename)
                     raise
                 try:
                     reqd = outputClass.requiredData
@@ -206,7 +206,7 @@ def getOutputs():
                     if outputConfig.has_option(i, requiredField):
                         pluginData[requiredField] = outputConfig.get(i, requiredField)
                     else:
-                        pandl("E", "Missing required field {0} for output plugin {1}", vals=(requiredField, i))
+                        pandl("E", "Missing required field {0} for output plugin {1}", (requiredField, i))
                         raise MissingField
 
                 for optionalField in opt:
@@ -216,9 +216,9 @@ def getOutputs():
                 instClass = outputClass(pluginData)
                 instClass.async = async
                 outputPlugins.append(instClass)
-                pandl("I", "Loaded output plugin {0}", vals=i)
+                pandl("I", "Loaded output plugin {0}", i)
         except Exception as e: # add specific exception for missing module
-            pandl("Ex", "Failed to import output plugin: {0} [{1}]", vals=(i, e,))
+            pandl("Ex", "Failed to import output plugin: {0} [{1}]", (i, e,))
             raise
 
 # Main Loop
@@ -281,7 +281,7 @@ def getData():
                 except KeyboardInterrupt:
                     raise
                 except Exception as e:
-                    pandl("Ex", "Main Loop Exception: {0}", vals=e)
+                    pandl("Ex", "Main Loop Exception: {0}", e)
                     keepRunning = False
                     raise
                 else:
