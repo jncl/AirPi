@@ -141,6 +141,7 @@ for i in sensorNames:
             pandl("I", "Loaded sensor plugin {0}", vals=i)
     except Exception as e: # add specific exception for missing module
         pandl("Ex", "Failed to import sensor plugin {0}: [{1}]", vals=(i, e))
+        keepRunning = False
         break
 
 # Outputs
@@ -209,6 +210,7 @@ for i in outputNames:
             pandl("I", "Loaded output plugin {0}", vals=i)
     except Exception as e: # add specific exception for missing module
         pandl("Ex", "Failed to import output plugin: {0} [{1}]", vals=(i, e))
+        keepRunning = False
         break
 
 # Main Loop
