@@ -17,22 +17,8 @@ from outputs import output
 
 # add logging support
 import logging, logging.handlers
-LOG_FILENAME = os.path.join("/var/log/airpi" , 'airpi.log')
-# Set up a specific logger with our desired output level
-log = logging.getLogger('airpi')
-# create handler and add it to the log
-handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes = 40960, backupCount = 5)
-log.addHandler(handler)
-# create formatter and add it to the handler
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-
-# set log message level
-if len(sys.argv) > 1:
-    if sys.argv[1] == "-d":
-        log.setLevel(logging.DEBUG)
-    else:
-        log.setLevel(logging.INFO)
+log     = None
+logfile = os.path.join("/var/log/airpi" , 'airpi.log')
 
 # configuration files
 cfgdir      = "/usr/local/etc/airpi"
@@ -51,7 +37,7 @@ def pandl(mtype, msg, mvals=None):
 
     try:
         if mvals != None:
-            msg = msg.format(*mvals)
+            msg = msg.format(*mvals) # use '*' to indicate mvals is a list of args
     except Exception:
         raise
 
@@ -150,7 +136,7 @@ def getInputs():
                     gpsPluginInstance = instClass
                 pandl("I", "Loaded sensor plugin {0}", i)
         except Exception as e: # add specific exception for missing module
-            pandl("Ex", "Failed to import sensor plugin {0}: [{1}]", (i, e,))
+            pandl("Ex", "Failed to load sensor plugin {0}", i)
             raise
 
 # Outputs
@@ -220,7 +206,7 @@ def getOutputs():
                 outputPlugins.append(instClass)
                 pandl("I", "Loaded output plugin {0}", i)
         except Exception as e: # add specific exception for missing module
-            pandl("Ex", "Failed to import output plugin: {0} [{1}]", (i, e,))
+            pandl("Ex", "Failed to load output plugin: {0}", i)
             raise
 
 # Main Loop
@@ -306,29 +292,57 @@ def getData():
         except:
             raise
 
+def runAirPi():
 
-if __name__ == "__main__":
+    global log, gpsPluginInstance
+
+    # Set up a specific logger with our desired output level
+    log = logging.getLogger('airpi')
+    # create handler and add it to the log
+    handler = logging.handlers.RotatingFileHandler(logfile, maxBytes = 40960, backupCount = 5)
+    log.addHandler(handler)
+    # create formatter and add it to the handler
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    # set log message level
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "-d":
+            log.setLevel(logging.DEBUG)
+        else:
+            log.setLevel(logging.INFO)
+
     log.info(">>>>>>>> AirPi starting <<<<<<<<")
     log.info("Python Info: {0} - {1} - {2}\n{3}".format(platform.platform(), platform.python_version(), platform.python_build(), str(platform.uname())))
 
     try:
-        try:
-            log.debug("Getting Inputs")
-            getInputs()
-            log.debug("Getting Outputs")
-            getOutputs()
-            log.debug("Getting Data")
-            getData()
-        except Exception as e:
-            # Need to handle a SystemExit
-            log.exception("Exception caught: {0}".format(e))
-            # sys.exit(1)
+        log.debug("Getting Inputs")
+        getInputs()
+        log.debug("Getting Outputs")
+        getOutputs()
+        log.debug("Getting Data")
+        getData()
+    except Exception:
+        raise
     finally:
         # stop gps controller
         if gpsPluginInstance != None:
             gpsPluginInstance.stopController()
-        log.info(">>>>>>>> AirPi ending <<<<<<<<")
+
+def startAirPi():
+
+    try:
+        try:
+            runAirPi()
+        except Exception as e:
+            # Need to handle a SystemExit
+            log.exception("AirPi Error: {0}".format(e))
+            sys.exit(1)
+    finally:
         # Shutdown the logging system
         logging.shutdown()
         # Exit here
         os._exit(0)
+
+if __name__ == "__main__":
+    startAirPi()
