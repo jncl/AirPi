@@ -35,9 +35,9 @@ if len(sys.argv) > 1:
         log.setLevel(logging.INFO)
 
 # configuration files
-cfgdir = "/usr/local/etc/airpi"
-sensorcfg = os.path.join(cfgdir, 'sensors.cfg')
-outputscfg = os.path.join(cfgdir, 'outputs.cfg')
+cfgdir      = "/usr/local/etc/airpi"
+sensorcfg   = os.path.join(cfgdir, 'sensors.cfg')
+outputscfg  = os.path.join(cfgdir, 'outputs.cfg')
 settingscfg = os.path.join(cfgdir, 'settings.cfg')
 
 GPIO.setwarnings(False)
@@ -222,8 +222,8 @@ def getData():
     mainConfig.read(settingscfg)
 
     delayTime = mainConfig.getfloat("Main", "uploadDelay")
-    redPin = mainConfig.getint("Main", "redPin")
-    greenPin = mainConfig.getint("Main", "greenPin")
+    redPin    = mainConfig.getint("Main", "redPin")
+    greenPin  = mainConfig.getint("Main", "greenPin")
     GPIO.setup(redPin, GPIO.OUT, initial = GPIO.LOW)
     GPIO.setup(greenPin, GPIO.OUT, initial = GPIO.LOW)
 
@@ -245,22 +245,22 @@ def getData():
                             continue
                         log.debug("GPS output: %s" % (val,))
                         # handle GPS data
-                        dataDict["lat"] = val[0]
-                        dataDict["lon"] = val[1]
-                        dataDict["ele"] = val[2]
-                        dataDict["domain"] = val[3]
+                        dataDict["lat"]         = val[0]
+                        dataDict["lon"]         = val[1]
+                        dataDict["ele"]         = val[2]
+                        dataDict["domain"]      = val[3]
                         dataDict["disposition"] = val[4]
-                        dataDict["exposure"] = val[5]
-                        dataDict["name"] = i.locnName
-                        dataDict["type"] = i.valType
-                        dataDict["sensor"] = i.sensorName
+                        dataDict["exposure"]    = val[5]
+                        dataDict["name"]        = i.locnName
+                        dataDict["type"]        = i.valType
+                        dataDict["sensor"]      = i.sensorName
                     else:
                         if val == None: # this means it has no data to upload.
                             continue
-                        dataDict["value"] = val
-                        dataDict["unit"] = i.valUnit
+                        dataDict["value"]  = val
+                        dataDict["unit"]   = i.valUnit
                         dataDict["symbol"] = i.valSymbol
-                        dataDict["type"] = i.valType
+                        dataDict["type"]   = i.valType
                         dataDict["sensor"] = i.sensorName
                     data.append(dataDict)
                 working = True
