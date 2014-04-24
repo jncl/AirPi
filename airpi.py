@@ -213,7 +213,8 @@ def getOutputs():
                 outputPlugins.append(instClass)
                 pandl("I", "Loaded output plugin {0}", vals=i)
         except Exception as e: # add specific exception for missing module
-            print("Output plugin exception: {0}, {1}".format(type(i), type(e))
+            print("Output plugin exception: {0}, {1}".format(type(i), type(e)))
+            log.info("Output plugin exception: {0}, {1}".format(type(i), type(e)))
             pandl("Ex", "Failed to import output plugin: {0} [{1}]", vals=(i, e))
             raise
 
