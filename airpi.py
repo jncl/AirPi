@@ -9,6 +9,7 @@ import ConfigParser
 import time
 import inspect
 import os
+import platform
 
 from math import isnan
 from sensors import sensor
@@ -141,7 +142,7 @@ def getInputs():
                 pandl("I", "Loaded sensor plugin {0}", vals=i)
         except Exception as e: # add specific exception for missing module
             pandl("Ex", "Failed to import sensor plugin {0}: [{1}]", vals=(i, e))
-            raise
+            raise e
 
 # Outputs
 outputPlugins = []
@@ -209,7 +210,7 @@ def getOutputs():
                 pandl("I", "Loaded output plugin {0}", vals=i)
         except Exception as e: # add specific exception for missing module
             pandl("Ex", "Failed to import output plugin: {0} [{1}]", vals=(i, e))
-            raise
+            raise e
 
 # Main Loop
 keepRunning = True
@@ -284,17 +285,26 @@ def getData():
         except KeyboardInterrupt:
             pandl("I", "KeyboardInterrupt detected")
             keepRunning = False
+        except Exception:
+            keepRunning = False
+            raise
 
 
 if __name__ == "__main__":
+    log.info(">>>>>>>> AirPi starting <<<<<<<<")
+    log.info("Python Info: {0} - {1} - {2}\n{3}".format(platform.platform(), platform.python_version(), platform.python_build(), str(platform.uname())))
+
     try:
         try:
+            log.debug("Getting Inputs")
             getInputs()
+            log.debug("Getting Outputs")
             getOutputs()
+            log.debug("Getting Data")
             getData()
         except Exception, e:
             # Need to handle a SystemExit
-            logger.exception("Error: {0}".format(e))
+            log.exception("Error: {0}".format(e))
             sys.exit(1)
     finally:
         # stop gps controller
