@@ -26,7 +26,6 @@ class Xively(output.Output):
                     # remove elements not required by Xively
                     del l["type"]
                     del l["sensor"]
-                    # l = ({"disposition": i["disposition"], "name": i["name"], "exposure": i["exposure"], "domain": i["domain"], "ele": i["ele"], "lat": i["lat"], "lon": i["lon"]})
                 else:
                     arr.append({"id": i["type"], "current_value": i["value"]})
 
