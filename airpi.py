@@ -286,15 +286,11 @@ def getData():
 
 def runAirPi():
 
-    # global log # required as updated here
-
     # set log message level
     log.setLevel(logging.INFO)
     if len(sys.argv) > 1:
         if sys.argv[1] == "-d":
             log.setLevel(logging.DEBUG)
-
-    # log.debug("runAirPi: {0}, {1}".format(str(log), str(gpsPluginInstance)))
 
     log.info(">>>>>>>> AirPi starting <<<<<<<<")
     log.info("Python Info: {0} - {1} - {2}\n{3}".format(platform.platform(), platform.python_version(), platform.python_build(), str(platform.uname())))
@@ -329,7 +325,6 @@ def main():
             runAirPi()
         except Exception:
             log.exception("AirPi Exception:")
-            # sys.exit(1)
     finally:
         # Shutdown the logging system
         logging.shutdown()
