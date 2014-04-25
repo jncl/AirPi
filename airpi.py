@@ -29,9 +29,9 @@ from outputs import output
 
 # configuration files
 cfgdir      = "/usr/local/etc/airpi"
+settingscfg = os.path.join(cfgdir, 'settings.cfg')
 sensorcfg   = os.path.join(cfgdir, 'sensors.cfg')
 outputscfg  = os.path.join(cfgdir, 'outputs.cfg')
-settingscfg = os.path.join(cfgdir, 'settings.cfg')
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
@@ -47,8 +47,9 @@ class MissingField(Exception): pass
 sensorPlugins = []
 gpsPluginInstance = None
 def getInputs():
+    log.debug("getInputs: {0}, {1}, {2}".format(sensorcfg), sensorPlugins, len(sensorPlugins))
+
     global sensorPlugins, gpsPluginInstance
-    log.debug("getInputs: {0}, {1}, {2}".format(len(sensorPlugins), len(outputPlugins), str(gpsPluginInstance)))
 
     sensorConfig = ConfigParser.SafeConfigParser()
     sensorConfig.read(sensorcfg)
@@ -117,8 +118,9 @@ def getInputs():
 # Outputs
 outputPlugins = []
 def getOutputs():
+    log.debug("getOutputs: {0}, {1}, {2}".format(outputscfg, outputPlugins, len(outputPlugins))
+
     global outputPlugins
-    log.debug("getOutputa: {0}, {1}, {2}".format(len(sensorPlugins), len(outputPlugins), str(gpsPluginInstance)))
 
     outputConfig = ConfigParser.SafeConfigParser()
     outputConfig.read(outputscfg)
@@ -187,7 +189,9 @@ def getOutputs():
 
 # Main Loop
 def getData():
-    log.debug("getData: {0}, {1}, {2}".format(len(sensorPlugins), len(outputPlugins), str(gpsPluginInstance)))
+    # global log, settingscfg
+
+    log.debug("getData: {0}, {1}, {2}, {3}, {4}, {5}".format(settingscfg, sensorPlugins, len(sensorPlugins), outputPlugins, len(outputPlugins), str(gpsPluginInstance))
 
     mainConfig = ConfigParser.SafeConfigParser()
     mainConfig.read(settingscfg)
@@ -274,7 +278,7 @@ def getData():
 
 def runAirPi():
 
-    global log
+    global log, settingscfg, sensorcfg, outputscfg
 
     # set log message level
     log.setLevel(logging.INFO)
@@ -282,7 +286,7 @@ def runAirPi():
         if sys.argv[1] == "-d":
             log.setLevel(logging.DEBUG)
 
-    log.debug("runAirPi: {0}, {1}".format(str(log), str(gpsPluginInstance)))
+    # log.debug("runAirPi: {0}, {1}".format(str(log), str(gpsPluginInstance)))
 
     log.info(">>>>>>>> AirPi starting <<<<<<<<")
     log.info("Python Info: {0} - {1} - {2}\n{3}".format(platform.platform(), platform.python_version(), platform.python_build(), str(platform.uname())))
@@ -310,7 +314,7 @@ def runAirPi():
         if gpsPluginInstance != None:
             gpsPluginInstance.stopController()
 
-def startAirPi():
+def main():
 
     try:
         try:
@@ -325,4 +329,4 @@ def startAirPi():
         os._exit(0)
 
 if __name__ == "__main__":
-    startAirPi()
+    main()
