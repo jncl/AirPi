@@ -121,6 +121,25 @@ class BMP085 :
           print "DBG: Raw Pressure: 0x%04X (%d)" % (raw & 0xFFFF, raw)
         return raw
 
+    def calibrateTemperature(self):
+        UT = self.readRawTemp()
+        if UT == -1:
+            return None
+
+        # X1 = 0
+        # X2 = 0
+        # B5 = 0
+
+        X1 = ((UT - self._cal_AC6) * self._cal_AC5) >> 15
+        X2 = (self._cal_MC << 11) / (X1 + self._cal_MD)
+        B5 = X1 + X2
+        if (self.debug):
+            print "DBG: X1 = %d" % (X1)
+            print "DBG: X2 = %d" % (X2)
+            print "DBG: B5 = %d" % (B5)
+            print "DBG: True Temperature = %.2f C" % (((B5 + 8) >> 4) / 10.0)
+        return B5
+
     def readTemperature(self):
         "Gets the compensated temperature in degrees celcius"
         # UT = 0
@@ -255,26 +274,8 @@ class BMP085 :
             print "DBG: MSL Pressure = %d" % (mslpressure)
         return mslpressure
 
-    def calibrateTemperature(self):
-        UT = self.readRawTemp()
-        if UT == -1:
-            return None
-
-        X1 = 0
-        X2 = 0
-        B5 = 0
-
-        X1 = ((UT - self._cal_AC6) * self._cal_AC5) >> 15
-        X2 = (self._cal_MC << 11) / (X1 + self._cal_MD)
-        B5 = X1 + X2
-        if (self.debug):
-            print "DBG: X1 = %d" % (X1)
-            print "DBG: X2 = %d" % (X2)
-            print "DBG: B5 = %d" % (B5)
-            print "DBG: True Temperature = %.2f C" % (((B5 + 8) >> 4) / 10.0)
-        return B5
-
 if __name__=="__main__":
-    bmp = BMP085()
+    bmp = BMP085(debug=True)
     print str(bmp.readTemperature()) + " C"
     print str(bmp.readPressure()) + " Pa"
+    print str(bmp.readAltitude()) + " m"
