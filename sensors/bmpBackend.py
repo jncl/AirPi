@@ -114,23 +114,19 @@ class BMP085 :
         else:
           time.sleep(0.008)
         msb = self.i2c.readU8(self.__BMP085_PRESSUREDATA)
-        lsb = self.i2c.readU8(self.__BMP085_PRESSUREDATA+1)
-        xlsb = self.i2c.readU8(self.__BMP085_PRESSUREDATA+2)
+        lsb = self.i2c.readU8(self.__BMP085_PRESSUREDATA + 1)
+        xlsb = self.i2c.readU8(self.__BMP085_PRESSUREDATA + 2)
         raw = ((msb << 16) + (lsb << 8) + xlsb) >> (8 - self.mode)
         if (self.debug):
           print "DBG: Raw Pressure: 0x%04X (%d)" % (raw & 0xFFFF, raw)
         return raw
 
-    def calibrateTemperature(self):
-        UT = self.readRawTemp()
-        if UT == -1:
+    def trueTemperature(self):
+        RT = self.readRawTemp()
+        if RT == -1:
             return None
 
-        # X1 = 0
-        # X2 = 0
-        # B5 = 0
-
-        X1 = ((UT - self._cal_AC6) * self._cal_AC5) >> 15
+        X1 = ((RT - self._cal_AC6) * self._cal_AC5) >> 15
         X2 = (self._cal_MC << 11) / (X1 + self._cal_MD)
         B5 = X1 + X2
         if (self.debug):
@@ -142,20 +138,7 @@ class BMP085 :
 
     def readTemperature(self):
         "Gets the compensated temperature in degrees celcius"
-        # UT = 0
-        # X1 = 0
-        # X2 = 0
-        # B5 = 0
-        # temp = 0.0
-
-        # Read raw temp before aligning it with the calibration values
-        # UT = self.readRawTemp()
-        # if UT == -1:
-        #     return None
-        # X1 = ((UT - self._cal_AC6) * self._cal_AC5) >> 15
-        # X2 = (self._cal_MC << 11) / (X1 + self._cal_MD)
-        # B5 = X1 + X2
-        B5 = self.calibrateTemperature()
+        B5 = self.trueTemperature()
         if B5 == None:
             return B5
         temp = ((B5 + 8) >> 4) / 10.0
@@ -177,7 +160,6 @@ class BMP085 :
         B4 = 0
         B7 = 0
 
-        # UT = self.readRawTemp()
         UP = self.readRawPressure()
 
         # You can use the datasheet values to test the conversion results
@@ -202,16 +184,7 @@ class BMP085 :
           if (self.debug):
               self.showCalibrationData()
 
-        # True Temperature Calculations
-        # X1 = ((UT - self._cal_AC6) * self._cal_AC5) >> 15
-        # X2 = (self._cal_MC << 11) / (X1 + self._cal_MD)
-        # B5 = X1 + X2
-        # if (self.debug):
-        #   print "DBG: X1 = %d" % (X1)
-        #   print "DBG: X2 = %d" % (X2)
-        #   print "DBG: B5 = %d" % (B5)
-        #   print "DBG: True Temperature = %.2f C" % (((B5 + 8) >> 4) / 10.0)
-        B5 = self.calibrateTemperature()
+        B5 = self.trueTemperature()
         if B5 == None:
             return B5
         # Pressure Calculations
