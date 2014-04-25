@@ -30,7 +30,7 @@ from outputs import output
 # configuration files
 cfgdir      = "/usr/local/etc/airpi"
 settingscfg = os.path.join(cfgdir, 'settings.cfg')
-sensorcfg   = os.path.join(cfgdir, 'sensors.cfg')
+sensorscfg  = os.path.join(cfgdir, 'sensors.cfg')
 outputscfg  = os.path.join(cfgdir, 'outputs.cfg')
 
 GPIO.setwarnings(False)
@@ -47,12 +47,11 @@ class MissingField(Exception): pass
 sensorPlugins = []
 gpsPluginInstance = None
 def getInputs():
-    log.debug("getInputs: {0}, {1}, {2}".format(sensorcfg), sensorPlugins, len(sensorPlugins))
 
-    global sensorPlugins, gpsPluginInstance
+    global gpsPluginInstance # required as updated here
 
     sensorConfig = ConfigParser.SafeConfigParser()
-    sensorConfig.read(sensorcfg)
+    sensorConfig.read(sensorscfg)
     sensorNames = sensorConfig.sections()
 
     for i in sensorNames:
@@ -118,13 +117,11 @@ def getInputs():
 # Outputs
 outputPlugins = []
 def getOutputs():
-    log.debug("getOutputs: {0}, {1}, {2}".format(outputscfg, outputPlugins, len(outputPlugins))
-
-    global outputPlugins
 
     outputConfig = ConfigParser.SafeConfigParser()
     outputConfig.read(outputscfg)
     outputNames = outputConfig.sections()
+
     for i in outputNames:
         try:
             try:
@@ -189,9 +186,6 @@ def getOutputs():
 
 # Main Loop
 def getData():
-    # global log, settingscfg
-
-    log.debug("getData: {0}, {1}, {2}, {3}, {4}, {5}".format(settingscfg, sensorPlugins, len(sensorPlugins), outputPlugins, len(outputPlugins), str(gpsPluginInstance))
 
     mainConfig = ConfigParser.SafeConfigParser()
     mainConfig.read(settingscfg)
@@ -241,6 +235,12 @@ def getData():
                         dataDict["sensor"] = i.sensorName
                     data.append(dataDict)
 
+                # bail out if no sensor data found
+                log.debug("getData after inputs loop: {0} {1}".format(data, len(data)))
+                if len(data) == 0:
+                    log.error("No Sensor data found, stopping")
+                    raise EOFError
+
                 working = True
                 try:
                     for i in outputPlugins:
@@ -278,7 +278,7 @@ def getData():
 
 def runAirPi():
 
-    global log, settingscfg, sensorcfg, outputscfg
+    # global log # required as updated here
 
     # set log message level
     log.setLevel(logging.INFO)
@@ -295,7 +295,7 @@ def runAirPi():
         if not os.path.isfile(settingscfg):
             raise IOError("Unable to access config file: {0}".format(settingscfg))
 
-        if not os.path.isfile(sensorcfg):
+        if not os.path.isfile(sensorscfg):
             raise IOError("Unable to access config file: {0}".format(sensorscfg))
 
         if not os.path.isfile(outputscfg):
