@@ -47,7 +47,8 @@ class GPS(sensor.Sensor):
 
     def stopController(self):
         print("Stopping GPS controller")
-        self.log.info("Stopping GPS controller")
-        self.gpsc.stopController()
-        # wait for the thread to finish
-        self.gpsc.join()
+        self.log.info("Stopping GPS controller: {0}".format(self.gpsc.isAlive()))
+        if self.gpsc.isAlive():
+            self.gpsc.stopController()
+            # wait for the thread to finish
+            self.gpsc.join()
