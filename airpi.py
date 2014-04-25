@@ -5,6 +5,7 @@
 import sys
 sys.dont_write_bytecode = True
 import os
+from subprocess import Popen
 
 # add logging support
 import logging, logging.handlers
@@ -205,6 +206,13 @@ def getData():
 
             if (curTime - lastUpdated) > delayTime:
                 lastUpdated = curTime
+
+                # check to see if date is set
+                log.debug("Current Time: {0}".format(curTime))
+                if curTime < 5000:
+                    Popen('/etc/init.d/settime.sh', shell=True)
+                    continue
+
                 data = []
 
                 #Collect the data from each sensor
