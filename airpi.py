@@ -198,10 +198,9 @@ def getData():
     GPIO.setup(greenPin, GPIO.OUT, initial = GPIO.LOW)
 
     lastUpdated = 0
-    keepRunning = True
 
     try:
-        while keepRunning:
+        while True:
             curTime = time.time()
 
             if (curTime - lastUpdated) > delayTime:
@@ -222,7 +221,6 @@ def getData():
                     if i == gpsPluginInstance:
                         if isnan(val[2]): # this means it has no data to upload.
                             continue
-                        log.debug("GPS output: %s" % (val,))
                         # handle GPS data
                         dataDict["lat"]         = val[0]
                         dataDict["lon"]         = val[1]
@@ -263,7 +261,6 @@ def getData():
                     raise
                 except Exception as e:
                     log.error("Main Loop Exception: {0}".format(e))
-                    keepRunning = False
                     raise
                 else:
                     # delay before turning off LED
@@ -278,10 +275,8 @@ def getData():
 
     except KeyboardInterrupt:
         log.debug("KeyboardInterrupt detected")
-        keepRunning = False
     except Exception as e:
         log.error("Unexpected Exception {0}".format(e))
-        keepRunning = False
         raise
 
 def runAirPi():
