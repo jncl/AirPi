@@ -185,6 +185,13 @@ def getOutputs():
             log.error("Failed to load output plugin: {0}".format(i))
             raise
 
+# handle GPIO actuated shutdown
+# code based on: http://raspi.tv/2013/how-to-use-interrupts-with-python-on-the-raspberry-pi-and-rpi-gpio-part-2
+def waitForShutdown(pin):
+    print("waitForShutdown triggered: {0}".format(pin))
+    log.info("waitForShutdown triggered: {0}".format(pin))
+    Popen('/usr/bin/exitcheck.sh shutdown', shell=True) # shutdown system
+
 # Main Loop
 def getData():
 
@@ -196,6 +203,17 @@ def getData():
     greenPin  = mainConfig.getint("Main", "greenPin")
     GPIO.setup(redPin, GPIO.OUT, initial = GPIO.LOW)
     GPIO.setup(greenPin, GPIO.OUT, initial = GPIO.LOW)
+    # handle shutdownPin, if used
+    try:
+        shutdownPin = mainConfig.getint("Main", "shutdownPin")
+        if shutdownPin:
+            log.debug("shutdownPin selected {0}".format(shutdownPin))
+            # GPIO pin set as input. It is pulled up to stop false signals
+            GPIO.setup(shutdownPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            # add event to detect when shutdown required
+            GPIO.add_event_detect(shutdownPin, GPIO.FALLING, callback=waitForShutdown, bouncetime=500)
+    except:
+        pass
 
     lastUpdated = 0
 
@@ -320,6 +338,7 @@ def main():
             runAirPi()
         except Exception:
             log.exception("AirPi Exception:")
+            sys.exit(1)
     finally:
         # Shutdown the logging system
         logging.shutdown()
