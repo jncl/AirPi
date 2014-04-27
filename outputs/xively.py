@@ -39,7 +39,7 @@ class Xively(output.Output):
                 self.log.error("Xively Error: {0}".format(z.text))
                 return False
             return True
-        except ConnectionError as ce:
+        except requests.exceptions.ConnectionError as ce:
             if "Max retries exceeded" in ce.message:
                 pass
             else:
