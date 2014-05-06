@@ -28,6 +28,8 @@ from math import isnan
 from sensors import sensor
 from outputs import output
 
+debugMode = False
+
 # configuration files
 cfgdir      = "/usr/local/etc/airpi"
 settingscfg = os.path.join(cfgdir, 'settings.cfg')
@@ -58,22 +60,29 @@ def getInputs():
     for i in sensorNames:
         try:
             try:
-                filename = sensorConfig.get(i,"filename")
+                filename = sensorConfig.get(i, "filename")
             except Exception:
                 log.error("No filename config option found for sensor plugin {0}".format(i))
                 raise
             try:
-                enabled = sensorConfig.getboolean(i,"enabled")
+                enabled = sensorConfig.getboolean(i, "enabled")
             except Exception:
                 enabled = True
 
-            #if enabled, load the plugin
+            # if enabled, load the plugin
             if enabled:
                 try:
                     mod = __import__('sensors.' + filename, fromlist = ['a']) #Why does this work?
                 except Exception:
                     log.error("Could not import sensor module {0}".format(filename))
                     raise
+                # if debugging reload the module, to force changed code to be loaded
+                if debugMode:
+                    try:
+                        mod = reload(mod)
+                    except NameError:
+                        log.error("Could not reload sensor module {0}".format(filename))
+                        raise
 
                 try:
                     sensorClass = get_subclasses(mod, sensor.Sensor)
@@ -135,13 +144,20 @@ def getOutputs():
             except Exception:
                 enabled = False
 
-            #if enabled, load the plugin
+            # if enabled, load the plugin
             if enabled:
                 try:
                     mod = __import__('outputs.' + filename, fromlist = ['a']) #Why does this work?
                 except Exception:
                     log.error("Could not import output module {0}".format(filename))
                     raise
+                # if debugging reload the module, to force changed code to be loaded
+                if debugMode:
+                    try:
+                        mod = reload(mod)
+                    except NameError:
+                        log.error("Could not reload output module {0}".format(filename))
+                        raise
 
                 try:
                     outputClass = get_subclasses(mod, output.Output)
@@ -316,6 +332,7 @@ def runAirPi():
     if len(sys.argv) > 1:
         if sys.argv[1] == "-d":
             log.setLevel(logging.DEBUG)
+            debugMode = True
 
     log.info(">>>>>>>> AirPi starting <<<<<<<<")
     log.info("Python Info: {0} - {1} - {2}\n{3}".format(platform.platform(), platform.python_version(), platform.python_build(), str(platform.uname())))
