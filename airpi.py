@@ -187,10 +187,11 @@ def getOutputs():
 
 # handle GPIO actuated shutdown
 # code based on: http://raspi.tv/2013/how-to-use-interrupts-with-python-on-the-raspberry-pi-and-rpi-gpio-part-2
-def waitForShutdown(pin):
-    print("waitForShutdown triggered: {0}".format(pin))
-    log.info("waitForShutdown triggered: {0}".format(pin))
+def shutdownNow(pin):
+    print("shutdownNow triggered: {0}".format(pin))
+    log.info("shutdownNow triggered: {0}".format(pin))
     Popen('/usr/bin/exitcheck.sh shutdown', shell=True) # shutdown system
+    sys.exit(1)
 
 # Main Loop
 def getData():
@@ -198,9 +199,11 @@ def getData():
     mainConfig = ConfigParser.SafeConfigParser()
     mainConfig.read(settingscfg)
 
-    delayTime = mainConfig.getfloat("Main", "uploadDelay")
-    redPin    = mainConfig.getint("Main", "redPin")
-    greenPin  = mainConfig.getint("Main", "greenPin")
+    cycleCount = mainConfig.getint("Main", "cycleCount")
+    delayTime  = mainConfig.getfloat("Main", "uploadDelay")
+    redPin     = mainConfig.getint("Main", "redPin")
+    greenPin   = mainConfig.getint("Main", "greenPin")
+
     GPIO.setup(redPin, GPIO.OUT, initial = GPIO.LOW)
     GPIO.setup(greenPin, GPIO.OUT, initial = GPIO.LOW)
     # handle shutdownPin, if used
@@ -211,14 +214,15 @@ def getData():
             # GPIO pin set as input. It is pulled up to stop false signals
             GPIO.setup(shutdownPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             # add event to detect when shutdown required
-            GPIO.add_event_detect(shutdownPin, GPIO.FALLING, callback=waitForShutdown, bouncetime=500)
+            GPIO.add_event_detect(shutdownPin, GPIO.FALLING, callback=shutdownNow, bouncetime=500)
     except:
         pass
 
-    lastUpdated = 0
+    lastUpdated = curCount = 0
 
     try:
         while True:
+
             curTime = time.time()
 
             if (curTime - lastUpdated) > delayTime:
@@ -285,6 +289,14 @@ def getData():
                     time.sleep(1)
                     GPIO.output(greenPin, GPIO.LOW)
                     GPIO.output(redPin, GPIO.LOW)
+
+            # check to see if running a cycle
+            # if so then shutdown when cycle has completed
+            if cycleCount > 0:
+                curCount += 1
+                log.debug("cycleCount {0}, curCount {1}".format(cycleCount, curCount))
+                if curCount > cycleCount:
+                    shutdownNow(99)
 
             # wait for remainder of delayTime
             waitTime = (delayTime - (time.time() - lastUpdated)) + 0.01
