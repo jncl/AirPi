@@ -295,7 +295,7 @@ def getData():
             if cycleCount > 0:
                 curCount += 1
                 log.debug("cycleCount {0}, curCount {1}".format(cycleCount, curCount))
-                if curCount > cycleCount:
+                if cycleCount == curCount:
                     shutdownNow(99)
 
             # wait for remainder of delayTime
