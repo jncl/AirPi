@@ -1,5 +1,6 @@
 import mcp3008
 import sensor
+import math
 
 # add logging support
 import logging
@@ -30,6 +31,9 @@ class Analogue(sensor.Sensor):
         if self.pullUp == None and self.pullDown == None:
             self.valUnit = "millvolts"
             self.valSymbol = "mV"
+        if self.sensorName == "LDR_lux":
+            self.valUnit = "lux"
+            self.valSymbol = "lx"
 
     def getVal(self):
         result = self.adc.readADC(self.adcPin)
@@ -45,11 +49,16 @@ class Analogue(sensor.Sensor):
         vout = float(result)/1023 * vin
 
         if self.pullDown!=None:
-            #Its a pull down resistor
+            # It's a pull down resistor
             resOut = (self.pullDown * vin) / vout - self.pullDown
         elif self.pullUp != None:
             resOut = self.pullUp / ((vin / vout) - 1)
         else:
             resOut = vout * 1000
+        # extra calc for lux value
+        # code used is from here: http://airpi.freeforums.net/post/574/quote/78
+        if self.sensorName == "LDR_lux":
+            resOut = float(5e9) * (math.log10(resOut)**-12.78)
+            resOut = float("%.2f" % resOut)
         return resOut
 
