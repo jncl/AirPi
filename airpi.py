@@ -80,6 +80,7 @@ def getInputs():
                 if debugMode:
                     try:
                         mod = reload(mod)
+                        log.debug("Reloaded sensor module {0}".format(filename))
                     except NameError:
                         log.error("Could not reload sensor module {0}".format(filename))
                         raise
@@ -155,6 +156,7 @@ def getOutputs():
                 if debugMode:
                     try:
                         mod = reload(mod)
+                        log.debug("Reloaded output module {0}".format(filename))
                     except NameError:
                         log.error("Could not reload output module {0}".format(filename))
                         raise
@@ -327,6 +329,8 @@ def getData():
 
 def runAirPi():
 
+    global debugMode # required as updated here
+
     # set log message level
     log.setLevel(logging.INFO)
     if len(sys.argv) > 1:
@@ -335,7 +339,7 @@ def runAirPi():
             debugMode = True
 
     log.info(">>>>>>>> AirPi starting <<<<<<<<")
-    log.info("Python Info: {0} - {1} - {2}\n{3}".format(platform.platform(), platform.python_version(), platform.python_build(), str(platform.uname())))
+    log.info("Python Info: {0} - {1} - {2}\n{3}\nDebug Mode: {4}".format(platform.platform(), platform.python_version(), platform.python_build(), str(platform.uname()), debugMode))
 
     try:
         if not os.path.isfile(settingscfg):
