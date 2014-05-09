@@ -41,7 +41,10 @@ class Analogue(sensor.Sensor):
             self.valUnit = "lux"
             self.valSymbol = "lx"
 
+    # voltage in is 3.3
+    # full voltage is 1023
     def getVal(self):
+
         result = self.adc.readADC(self.adcPin)
 
         if result == 0:
@@ -54,33 +57,35 @@ class Analogue(sensor.Sensor):
             self.log.warning("Check wiring for the {0} measurement, full voltage detected on ADC input {1}".format(self.sensorName, str(self.adcPin)))
             return None
 
-        vin = 3.3
-        vout = float(result)/1023 * vin
+        vout = float(result) / 1023 * 3.3
 
         if self.pullDown != None:
             # It's a pull down resistor
-            resOut = (self.pullDown * vin) / vout - self.pullDown
+            resOut = (self.pullDown * 3.3) / vout - self.pullDown
         elif self.pullUp != None:
-            resOut = self.pullUp / ((vin / vout) - 1)
+            resOut = self.pullUp / ((3.3 / vout) - 1)
         else:
             resOut = vout * 1000
+
+        self.log.debug("sensor: {0}, result: {1}, vout: {2}, resOut: {3}".format(self.sensorName, result, vout, resOut))
 
         # extra calc for lux value
         resOut2 = 0
         if self.sensorName == "LDR_lux":
             # calc used is from here: http://airpi.freeforums.net/post/574/quote/78
             try:
-                resOut2 = float(5e9) * (math.log10(resOut)**-12.78)
+                resOut2 = 5e9 * (math.log10(resOut) ** -12.78)
                 self.log.debug("Analogue: lux value #1 {0}".format(resOut2))
-            except: pass
-            # calc used is from here: http://pi.gate.ac.uk/posts/2014/02/25/airpisensors/
-            try:
-                resOut2 = math.log((math.log(resOut / 1000) - 4.125) / -0.6704)
-                self.log.debug("Analogue: lux value #2 {0}".format(resOut2))
             except: pass
             # another calc from here: http://www.edaboard.com/thread278855.html
             try:
-                resOut2 = math.pow((10000 / (resOut * 10)), (4/3))
+                # resOut2 = math.pow((10000 / (resOut * 10)), (4 / 3))
+                resOut2 = 10000 / (resOut * 10) ** (4 / 3)
+                self.log.debug("Analogue: lux value #2 {0}".format(resOut2))
+            except: pass
+            # calc used is from here: http://pi.gate.ac.uk/posts/2014/02/25/airpisensors/
+            try:
+                resOut2 = math.exp((math.log(resOut / 1000) - 4.125) / - 0.6704)
                 self.log.debug("Analogue: lux value #3 {0}".format(resOut2))
             except: pass
 
