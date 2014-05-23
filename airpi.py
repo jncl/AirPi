@@ -250,7 +250,7 @@ def getData():
                 log.debug("Current Time: {0}".format(curTime))
                 if curTime < 5000:
                     if gpsPluginInstance != None:
-                        gpsPluginInstance:setTime()
+                        gpsPluginInstance.setTime()
                     else:
                         Popen('/etc/init.d/settime.sh', shell=True)
                     continue
