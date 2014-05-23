@@ -208,9 +208,9 @@ def getOutputs():
 def shutdownNow(pin):
     print("shutdownNow triggered: {0}".format(pin))
     log.info("shutdownNow triggered: {0}".format(pin))
-    Popen('/usr/bin/exitcheck.sh shutdown', shell=True) # shutdown system
     GPIO.output(greenPin, GPIO.HIGH)
     GPIO.output(redPin, GPIO.HIGH)
+    Popen('/usr/bin/exitcheck.sh shutdown', shell=True) # shutdown system
     sys.exit(1)
 
 # Main Loop
