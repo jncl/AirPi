@@ -249,7 +249,10 @@ def getData():
                 # check to see if date is set
                 log.debug("Current Time: {0}".format(curTime))
                 if curTime < 5000:
-                    Popen('/etc/init.d/settime.sh', shell=True)
+                    if gpsPluginInstance != None:
+                        gpsPluginInstance:setTime()
+                    else:
+                        Popen('/etc/init.d/settime.sh', shell=True)
                     continue
 
                 data = []

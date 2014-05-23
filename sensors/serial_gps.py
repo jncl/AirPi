@@ -1,6 +1,7 @@
 import sensor
 import GpsController
 import socket
+import os
 
 # add logging support
 import logging
@@ -15,7 +16,7 @@ locns = {
 
 class GPS(sensor.Sensor):
     requiredData = []
-    optionalData = []
+    optionalData = ["setTime"]
     gpsc = None
 
     def __init__(self, data):
@@ -23,6 +24,7 @@ class GPS(sensor.Sensor):
         self.sensorName = "MTK3339"
         self.valType = "Location"
         self.locnName = locns[socket.gethostname().split("-")[1]]
+        self.setTime = data["setTime"]
 
         # start polling the GPS data
         try:
@@ -52,3 +54,10 @@ class GPS(sensor.Sensor):
             self.gpsc.stopController()
             # wait for the thread to finish
             self.gpsc.join()
+
+    def setTime(self):
+        print("Setting Time")
+        self.log.info("Setting Clock to {0}: {1}".format(self.gpsc.utc, self.setTime))
+        if self.setTime:
+            if self.gpsc.utc:
+                os.system('date -s %s' % self.gpsc.utc)
