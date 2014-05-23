@@ -235,6 +235,16 @@ def getData():
             GPIO.add_event_detect(shutdownPin, GPIO.FALLING, callback=shutdownNow, bouncetime=500)
     except:
         pass
+    # handle debugFlag, if used
+    try:
+        debugFlag = mainConfig.getint("Main", "debugFlag")
+        if debugFlag:
+            log.debug("debugFlag: {0}".format(debugFlag))
+            if debugFlag == "on":
+                log.setLevel(logging.DEBUG)
+                debugMode = True
+    except:
+        pass
 
     lastUpdated = curCount = 0
 
