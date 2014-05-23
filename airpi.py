@@ -244,17 +244,19 @@ def getData():
             curTime = time.time()
 
             if (curTime - lastUpdated) > delayTime:
-                lastUpdated = curTime
 
                 # check to see if date is set
                 log.debug("Current Time: {0}".format(curTime))
+                # if not then try to set it
                 if curTime < 5000:
                     if gpsPluginInstance != None:
                         gpsPluginInstance.setClock()
                     else:
                         Popen('/etc/init.d/settime.sh', shell=True)
+                    time.sleep(5)
                     continue
 
+                lastUpdated = curTime
                 data = []
 
                 #Collect the data from each sensor
