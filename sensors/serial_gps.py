@@ -1,7 +1,7 @@
 import sensor
 import GpsController
 import socket
-import os
+from subprocess import Popen
 
 # add logging support
 import logging
@@ -60,4 +60,7 @@ class GPS(sensor.Sensor):
         self.log.info("Setting Clock to {0}: {1}".format(self.gpsc.utc, self.setTime))
         if self.setTime:
             if self.gpsc.utc:
-                os.system('date -s %s' % self.gpsc.utc)
+                t = self.gpsc.utc
+                # set the time
+                Popen('/bin/date --set {0}-{1}-{2} {3}:{4}:{5}'.format(t.year, t.month, t.day, t.hour, t.min, t.sec), shell=True)
+                # os.system('date -s %s' % self.gpsc.utc)
