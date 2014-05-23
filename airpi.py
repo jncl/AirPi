@@ -226,6 +226,17 @@ def getData():
 
     GPIO.setup(redPin, GPIO.OUT, initial = GPIO.LOW)
     GPIO.setup(greenPin, GPIO.OUT, initial = GPIO.LOW)
+
+    # handle debugFlag, if used
+    try:
+        debugFlag = mainConfig.getint("Main", "debugFlag")
+        if debugFlag:
+            log.debug("debugFlag: {0}".format(debugFlag))
+            if debugFlag == 1:
+                log.setLevel(logging.DEBUG)
+                debugMode = True
+    except:
+        pass
     # handle shutdownPin, if used
     try:
         shutdownPin = mainConfig.getint("Main", "shutdownPin")
@@ -235,16 +246,6 @@ def getData():
             GPIO.setup(shutdownPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             # add event to detect when shutdown required
             GPIO.add_event_detect(shutdownPin, GPIO.FALLING, callback=shutdownNow, bouncetime=500)
-    except:
-        pass
-    # handle debugFlag, if used
-    try:
-        debugFlag = mainConfig.getint("Main", "debugFlag")
-        if debugFlag:
-            log.debug("debugFlag: {0}".format(debugFlag))
-            if debugFlag == "on":
-                log.setLevel(logging.DEBUG)
-                debugMode = True
     except:
         pass
 
