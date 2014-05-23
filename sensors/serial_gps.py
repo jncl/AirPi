@@ -55,8 +55,8 @@ class GPS(sensor.Sensor):
             # wait for the thread to finish
             self.gpsc.join()
 
-    def setTime(self):
-        print("Setting Time")
+    def setClock(self):
+        print("Setting Clock")
         self.log.info("Setting Clock to {0}: {1}".format(self.gpsc.utc, self.setTime))
         if self.setTime:
             if self.gpsc.utc:
