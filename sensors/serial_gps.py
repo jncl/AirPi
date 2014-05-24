@@ -61,7 +61,7 @@ class GPS(sensor.Sensor):
             if self.gpsc.utc:
                 self.log.debug("setClock: {0}".format(self.gpsc.utc))
                 d = self.gpsc.utc[0:10]
-                t = self.gpsc.utc[11:8]
+                t = self.gpsc.utc[11:19]
                 self.log.info("Setting Clock to '{0} {1}'".format(d, t))
                 # set the time
                 Popen(['/bin/date', '--set', d, t], shell=True)
