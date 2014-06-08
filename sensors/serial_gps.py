@@ -10,7 +10,7 @@ mod_log = logging.getLogger('airpi.serial_gps')
 locns = {
     "TS5" : "Middlesbrough",
     "TA1" : "Taunton",
-    "CAR" : "Mobile"
+    "MOB" : "Mobile"
 }
 
 class GPS(sensor.Sensor):
