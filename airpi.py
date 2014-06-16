@@ -127,6 +127,7 @@ def getInputs():
 
 # Outputs
 outputPlugins = []
+lcdPluginInstance = None
 def getOutputs():
 
     outputConfig = ConfigParser.SafeConfigParser()
@@ -198,6 +199,9 @@ def getOutputs():
                 instClass = outputClass(pluginData)
                 instClass.async = async
                 outputPlugins.append(instClass)
+                # store outputPlugins object for LCD plugin
+                if i == "LCD":
+                    lcdPluginInstance = instClass
                 log.info("Loaded output plugin {0}".format(i))
         except Exception:
             log.error("Failed to load output plugin: {0}".format(i))
@@ -376,6 +380,9 @@ def runAirPi():
     except Exception:
         raise
     finally:
+        # clear LCD
+        if lcdPluginInstance != None:
+            lcdPluginInstance.clearDisplay()
         # stop gps controller
         if gpsPluginInstance != None:
             gpsPluginInstance.stopController()
