@@ -29,7 +29,7 @@ class Database(output.Output):
             else:
                 self.lcd.display_string("{0}: {1:.2f} {2}".format(i["type"][:1], i["value"], i["symbol"]), line)
             line += 1
-            self.log.debug("#2 line: {0}".format(line))
+            self.log.debug("#2 line: {0}, {1}, {2}".format(line, type(line), type(self.rows)))
             if line > self.rows:
                 line = 1
                 self.log.debug("#3 line: {0}".format(line))
