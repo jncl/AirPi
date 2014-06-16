@@ -13,8 +13,8 @@ class Database(output.Output):
 
     def __init__(self, data):
         self.log = logging.getLogger('airpi.lcd')
-        self.cols = data["cols"]
-        self.rows = data["rows"]
+        self.cols = int(data["cols"])
+        self.rows = int(data["rows"])
         self.lcd = lcddriver.lcd()
         self.lcd.clear(bl=0)
 
