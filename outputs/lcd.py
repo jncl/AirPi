@@ -14,6 +14,8 @@ abbr = {
     "Volume" : "Vol"
 }
 
+# chr(165) could be degree symbol
+# chr(223) could be degree symbol
 
 # add logging support
 import logging
@@ -28,20 +30,26 @@ class Database(output.Output):
         self.log = logging.getLogger('airpi.lcd')
         self.cols = int(data["cols"])
         self.rows = int(data["rows"])
+        self.blankline = " " * self.cols
         self.lcd = lcddriver.lcd()
-        self.lcd.clear(bl=0)
+        clearDisplay()
 
     def outputData(self, dataPoints):
         line = 1
         self.lcd.clear(bl=1)
         for i in dataPoints:
-            self.log.debug("type: {0}, value: {1:.2f}, symbol: {2}".format(i["type"][:1], i["value"], i["symbol"]))
+            self.lcd.display_string(self.blankline, line)
             # handle GPS data
             if i["type"] == "Location":
-                self.lcd.display_string("GPS: {0} {1} {2}".format(i["lat"], i["lon"], i["ele"]), line)
+                disp_str = "GPS: {0} {1} {2}".format(i["lat"], i["lon"], i["ele"])
             else:
-                self.lcd.display_string("{0}: {1:.2f} {2}".format(abbr[i["type"]], i["value"], i["symbol"]), line)
-            sleep(2)
+                disp_str = "{0}: {1:.2f} {2}".format(abbr[i["type"]], i["value"], i["symbol"])
+            self.log.debug(disp_str)
+            self.lcd.display_string(disp_str, line)
+            sleep(0.4)
             line += 1
             if line > self.rows:
                 line = 1
+
+    def clearDisplay()
+        self.lcd.clear(bl=0)
