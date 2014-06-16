@@ -7,14 +7,13 @@ import logging
 mod_log = logging.getLogger('airpi.lcd')
 
 class Database(output.Output):
-    requiredData = ["lcdAddr"]
+    requiredData = []
     optionalData = []
     lcd = None
 
     def __init__(self, data):
         self.log = logging.getLogger('airpi.lcd')
-        self.lcdAddr = data["lcdAddr"]
-        self.lcd = lcddriver.lcd(self.lcdAddr)
+        self.lcd = lcddriver.lcd()
         self.lcd.clear(bl=0)
 
     def outputData(self, dataPoints):
