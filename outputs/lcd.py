@@ -39,6 +39,7 @@ class Database(output.Output):
         self.lcd.clear(bl=1)
         for i in dataPoints:
             self.lcd.display_string(self.blankline, line)
+            disp_str = ""
             # handle GPS data
             if i["type"] == "Location":
                 disp_str = "GPS: {0} {1} {2}".format(i["lat"], i["lon"], i["ele"])
@@ -52,4 +53,4 @@ class Database(output.Output):
                 line = 1
 
     def clearDisplay(self, bl=0):
-        self.lcd.clear(bl)
+        self.lcd.clear(bl=bl)
