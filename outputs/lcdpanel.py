@@ -102,7 +102,7 @@ class LCDpanel(output.Output):
                 # if line > self.rows:
                 #     line = 1
             # update LcdScroller thread data
-            self.scroller.updDate((line1_str, line2_str, line3_str, line4_str))
+            self.scroller.updData((line1_str, line2_str, line3_str, line4_str))
             # self.line1.updData(line1_str)
             # self.line2.updData(line2_str)
             # self.line3.updData(line3_str)
