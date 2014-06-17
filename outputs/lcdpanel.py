@@ -63,11 +63,13 @@ class LCDpanel(output.Output):
                         disp_str = u"GPS: {0:.3f}{1} N {2:.3f}{3} W {4}".format(i["lat"], ds, i["lon"], ds, i["ele"])
                     else:
                         continue
+                elif i["type"] == "Temperature":
+                    disp_str = u"{0}: {1:.2f}{2} {3}".format(abbr[i["type"]], i["value"], ds, i["symbol"])
                 else:
                     disp_str = "{0}: {1:.2f} {2}".format(abbr[i["type"]], i["value"], i["symbol"])
                 # display data on LCD panel
                 self.lcd.display_string(disp_str, line)
-                self.log.debug("Display string: {0}, {1}".format(disp_str, line))
+                self.log.debug(u"Display string: {0}, {1}".format(disp_str, line))
                 sleep(0.4)
                 line += 1
                 if line > self.rows:
