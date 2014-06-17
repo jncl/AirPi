@@ -33,6 +33,8 @@ class LcdScroller(threading.Thread):
                 self.log.debug(u"Display string: {0} {1}".format(disp_str, i + 1))
                 # self.lcd.display_string(self.blankline, i + 1)
                 self.lcd.display_string(disp_str, i + 1)
+                start[i] += 1
+                finish[i] += 1
                 if start[i] > len(self.data[i]):
                     start[i] = 0
                     finish[i] = self.cols - 1
