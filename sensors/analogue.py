@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import mcp3008
 import sensor
 import math

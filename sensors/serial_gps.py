@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import sensor
 import GpsController
 import socket

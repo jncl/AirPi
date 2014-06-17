@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from gps import *
 from time import sleep
 import threading
