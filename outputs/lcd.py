@@ -51,5 +51,5 @@ class Database(output.Output):
             if line > self.rows:
                 line = 1
 
-    def clearDisplay()
+    def clearDisplay(self):
         self.lcd.clear(bl=0)
