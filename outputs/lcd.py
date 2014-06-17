@@ -38,6 +38,8 @@ class LCD(output.Output):
         line = 1
         self.lcd.clear(bl=1)
         for i in dataPoints:
+            print(i)
+            self.log.debug(i)
             self.lcd.display_string(self.blankline, line)
             disp_str = ""
             # handle GPS data when available
@@ -57,6 +59,8 @@ class LCD(output.Output):
                     line = 1
             except:
                 raise
+
+        return True
 
     def clearDisplay(self, bl=0):
         self.lcd.clear(bl=bl)
