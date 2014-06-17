@@ -21,7 +21,7 @@ abbr = {
 import logging
 mod_log = logging.getLogger('airpi.lcd')
 
-class Database(output.Output):
+class LCD(output.Output):
     requiredData = ["cols", "rows"]
     optionalData = []
     lcd = None
@@ -45,7 +45,7 @@ class Database(output.Output):
                 disp_str = "GPS: {0} {1} {2}".format(i["lat"], i["lon"], i["ele"])
             else:
                 disp_str = "{0}: {1:.2f} {2}".format(abbr[i["type"]], i["value"], i["symbol"])
-            self.log.debug(disp_str)
+            self.log.debug(disp_str, line)
             self.lcd.display_string(disp_str, line)
             sleep(0.4)
             line += 1
