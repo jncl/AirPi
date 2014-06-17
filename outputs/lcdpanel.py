@@ -1,6 +1,6 @@
 import output
 import lcddriver
-import LcdScroller
+from LcdScroller import LcdScroller
 from time import sleep
 
 try:
@@ -39,14 +39,14 @@ class LCDpanel(output.Output):
         try:
             self.lcd = lcddriver.lcd()
             # setup LcdScroller thread objects
-            self.line1 = LcdScroller.LcdScroller(self.lcd, 1, u"GPS: Unknown Unknown Unknown ")
-            self.line2 = LcdScroller.LcdScroller(self.lcd, 2, u"Temp: Unknown, P: Unknown, RH: Unknown ")
-            self.line3 = LcdScroller.LcdScroller(self.lcd, 3, u"LL: Unknown, LLl: Unknown, Vol: Unknown ")
-            self.line4 = LcdScroller.LcdScroller(self.lcd, 4, u"NO2: Unknown, CO: Unknown ")
+            self.line1 = LcdScroller(self.lcd, 1, u"GPS: Unknown Unknown Unknown ")
+            self.line2 = LcdScroller(self.lcd, 2, u"Temp: Unknown, P: Unknown, RH: Unknown ")
+            self.line3 = LcdScroller(self.lcd, 3, u"LL: Unknown, LLl: Unknown, Vol: Unknown ")
+            self.line4 = LcdScroller(self.lcd, 4, u"NO2: Unknown, CO: Unknown ")
             self.line1.start()
-            self.line2.start()
-            self.line3.start()
-            self.line4.start()
+            # self.line2.start()
+            # self.line3.start()
+            # self.line4.start()
             # self.lcd.display_string("  Airpi LCD panel   ", 2)
             # self.lcd.display_string(" Init was a Success ", 3)
         except Exception as e:
