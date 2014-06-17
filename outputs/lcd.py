@@ -40,17 +40,23 @@ class LCD(output.Output):
         for i in dataPoints:
             self.lcd.display_string(self.blankline, line)
             disp_str = ""
-            # handle GPS data
+            # handle GPS data when available
             if i["type"] == "Location":
-                disp_str = "GPS: {0} {1} {2}".format(i["lat"], i["lon"], i["ele"])
+                if i["lat"] > 0.0:
+                    disp_str = "GPS: {0:.2f} {1:.2f} {2}".format(i["lat"], i["lon"], i["ele"])
+                else:
+                    continue
             else:
                 disp_str = "{0}: {1:.2f} {2}".format(abbr[i["type"]], i["value"], i["symbol"])
-            self.log.debug(disp_str, line)
-            self.lcd.display_string(disp_str, line)
-            sleep(0.4)
-            line += 1
-            if line > self.rows:
-                line = 1
+            try:
+                self.log.debug(disp_str, line)
+                self.lcd.display_string(disp_str, line)
+                sleep(0.4)
+                line += 1
+                if line > self.rows:
+                    line = 1
+            except:
+                raise
 
     def clearDisplay(self, bl=0):
         self.lcd.clear(bl=bl)
