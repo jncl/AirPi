@@ -130,6 +130,8 @@ outputPlugins = []
 lcdPluginInstance = None
 def getOutputs():
 
+    global lcdPluginInstance # required as updated here
+
     outputConfig = ConfigParser.SafeConfigParser()
     outputConfig.read(outputscfg)
     outputNames = outputConfig.sections()
