@@ -32,7 +32,7 @@ class Database(output.Output):
         self.rows = int(data["rows"])
         self.blankline = " " * self.cols
         self.lcd = lcddriver.lcd()
-        clearDisplay()
+        self.lcd.clear(bl=0)
 
     def outputData(self, dataPoints):
         line = 1
@@ -51,5 +51,5 @@ class Database(output.Output):
             if line > self.rows:
                 line = 1
 
-    def clearDisplay(self):
-        self.lcd.clear(bl=0)
+    def clearDisplay(self, bl=0):
+        self.lcd.clear(bl)
