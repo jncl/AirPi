@@ -380,9 +380,9 @@ def runAirPi():
     except Exception:
         raise
     finally:
-        # clear LCD
+        # stop scrollers & clear LCD
         if lcdPluginInstance != None:
-            lcdPluginInstance.clearDisplay()
+            lcdPluginInstance.stopScrollers()
         # stop gps controller
         if gpsPluginInstance != None:
             gpsPluginInstance.stopController()
