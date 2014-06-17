@@ -35,7 +35,7 @@ class LCDpanel(output.Output):
         self.log = logging.getLogger('airpi.lcdpanel')
         self.cols = int(data["cols"])
         self.rows = int(data["rows"])
-        self.delay = int(data["delay"])
+        self.delay = float(data["delay"])
         try:
             self.lcd = lcddriver.lcd()
             self.lcd.display_string("  Airpi LCD panel   ", 2)
