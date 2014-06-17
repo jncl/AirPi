@@ -66,8 +66,8 @@ class LCDpanel(output.Output):
                 else:
                     disp_str = "{0}: {1:.2f} {2}".format(abbr[i["type"]], i["value"], i["symbol"])
                 # display data on LCD panel
-                self.lcd.display_string("Display string: {0}, {1}".format(disp_str, line))
-                self.log.debug(disp_str, line)
+                self.lcd.display_string(disp_str, line)
+                self.log.debug("Display string: {0}, {1}".format(disp_str, line))
                 sleep(0.4)
                 line += 1
                 if line > self.rows:
