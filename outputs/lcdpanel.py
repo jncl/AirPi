@@ -39,10 +39,10 @@ class LCDpanel(output.Output):
         try:
             self.lcd = lcddriver.lcd()
             # setup LcdScroller thread objects
-            self.line1 = LcdScroller.LcdScroller(self.lcd, 1, u"GPS: Unknown Unknown Unknown")
-            self.line2 = LcdScroller.LcdScroller(self.lcd, 2, u"Temp: Unknown, P: Unknown, RH: Unknown")
-            self.line3 = LcdScroller.LcdScroller(self.lcd, 3, u"LL: Unknown, LLl: Unknown, Vol: Unknown")
-            self.line4 = LcdScroller.LcdScroller(self.lcd, 4, u"NO2: Unknown, CO: Unknown")
+            self.line1 = LcdScroller.LcdScroller(self.lcd, 1, u"GPS: Unknown Unknown Unknown ")
+            self.line2 = LcdScroller.LcdScroller(self.lcd, 2, u"Temp: Unknown, P: Unknown, RH: Unknown ")
+            self.line3 = LcdScroller.LcdScroller(self.lcd, 3, u"LL: Unknown, LLl: Unknown, Vol: Unknown ")
+            self.line4 = LcdScroller.LcdScroller(self.lcd, 4, u"NO2: Unknown, CO: Unknown ")
             self.line1.start()
             self.line2.start()
             self.line3.start()
@@ -67,31 +67,31 @@ class LCDpanel(output.Output):
                 # handle GPS data when available
                 if i["type"] == "Location":
                     if i["lat"] > 0.0:
-                        disp_str = u"GPS: {0:.3f}{1} N {2:.3f}{3} W {4}".format(i["lat"], ds, i["lon"], ds, i["ele"])
+                        disp_str = u"GPS: {0:.3f}{1} N {2:.3f}{3} W {4} ".format(i["lat"], ds, i["lon"], ds, i["ele"])
                     else:
-                        disp_str = u"GPS: Unknown Unknown Unknown"
+                        disp_str = u"GPS: Unknown Unknown Unknown "
                 elif i["type"] == "Temperature":
-                    disp_str = u"{0}: {1:.2f}{2} {3}".format(abbr[i["type"]], i["value"], ds, i["symbol"])
+                    disp_str = u"{0}: {1:.2f}{2} {3} ".format(abbr[i["type"]], i["value"], ds, i["symbol"])
                 else:
-                    disp_str = u"{0}: {1:.2f} {2}".format(abbr[i["type"]], i["value"], i["symbol"])
+                    disp_str = u"{0}: {1:.2f} {2} ".format(abbr[i["type"]], i["value"], i["symbol"])
 
                 # add to correct line string array
                 if i["type"] == "Location":
                     line1_str = u"GPS: {0:.3f}{1} N {2:.3f}{3} W {4}".format(i["lat"], ds, i["lon"], ds, i["ele"])
                 elif i["type"] == "Temperature":
-                    line2_str.append(disp_str)
+                    line2_str += disp_str
                 elif i["type"] == "Pressure":
-                    line2_str.append(disp_str)
+                    line2_str += disp_str
                 elif i["type"] == "Relative_Humidity":
-                    line2_str.append(disp_str)
+                    line2_str += disp_str
                 elif i["type"] == "Light_Level":
-                    line3_str.append(disp_str)
+                    line3_str += disp_str
                 elif i["type"] == "Light_Level_lux":
-                    line3_str.append(disp_str)
+                    line3_str += disp_str
                 elif i["type"] == "Volume":
-                    line3_str.append(disp_str)
+                    line3_str += disp_str
                 else:
-                    line4_str.append(disp_str)
+                    line4_str += disp_str
                 # display data on LCD panel
                 # self.lcd.display_string(disp_str, line)
                 # self.log.debug(u"Display string: {0}, {1}".format(disp_str, line))
