@@ -39,28 +39,6 @@ outputscfg  = os.path.join(cfgdir, 'outputs.cfg')
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM) #Use BCM GPIO numbers.
 
-# placeholders for Plugin objects
-gpsPluginInstance = None
-lcdPluginInstance = None
-
-# handle SIGTERM (i.e. kill PID)
-import signal
-def signal_term_handler(signal, frame):
-    print("signal_term_handler: {0}, {1}".format(signal, frame))
-
-    # stop scroller & clear LCD
-    if lcdPluginInstance != None:
-        lcdPluginInstance.stopScrollers()
-
-    # stop gps controller
-    if gpsPluginInstance != None:
-        gpsPluginInstance.stopController()
-
-    # Shutdown the logging system
-    logging.shutdown()
-
-    sys.exit(1)
-
 def get_subclasses(mod, cls):
     for name, obj in inspect.getmembers(mod):
         if hasattr(obj, "__bases__") and cls in obj.__bases__:
@@ -70,6 +48,7 @@ class MissingField(Exception): pass
 
 # Inputs
 sensorPlugins = []
+gpsPluginInstance = None
 def getInputs():
 
     global gpsPluginInstance # required as updated here
@@ -148,6 +127,7 @@ def getInputs():
 
 # Outputs
 outputPlugins = []
+lcdPluginInstance = None
 def getOutputs():
 
     outputConfig = ConfigParser.SafeConfigParser()
@@ -232,6 +212,16 @@ def getOutputs():
 def shutdownNow(pin):
     print("shutdownNow triggered: {0}".format(pin))
     log.info("shutdownNow triggered: {0}".format(pin))
+
+    # stop scroller & clear LCD
+    if lcdPluginInstance != None:
+        lcdPluginInstance.stopScrollers()
+    # stop gps controller
+    if gpsPluginInstance != None:
+        gpsPluginInstance.stopController()
+    # Shutdown the logging system
+    logging.shutdown()
+
     Popen('/usr/bin/exitcheck.sh shutdown', shell=True) # shutdown system
     sys.exit(1)
 
@@ -400,17 +390,14 @@ def runAirPi():
     except Exception:
         raise
     finally:
-        # stop scrollers & clear LCD
+        # clear LCD
         if lcdPluginInstance != None:
-            lcdPluginInstance.stopScrollers()
+            lcdPluginInstance.clearLCD()
         # stop gps controller
         if gpsPluginInstance != None:
             gpsPluginInstance.stopController()
 
 def main():
-
-    # handle process being killed
-    signal.signal(signal.SIGTERM, signal_term_handler)
 
     try:
         try:
