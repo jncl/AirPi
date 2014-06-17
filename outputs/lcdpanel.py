@@ -60,7 +60,7 @@ class LCDpanel(output.Output):
                 # handle GPS data when available
                 if i["type"] == "Location":
                     if i["lat"] > 0.0:
-                        disp_str = u"GPS: {0:.3f}{1} N {2:.3f}{3} W {4} m".format(i["lat"], ds, i["lon"], ds, i["ele"])
+                        disp_str = u"GPS: {0:.3f}{1} N {2:.3f}{3} W {4} m ".format(i["lat"], ds, i["lon"], ds, i["ele"])
                     else:
                         disp_str = u"GPS: Unknown Unknown Unknown "
                 elif i["type"] == "Temperature":
