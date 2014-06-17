@@ -200,7 +200,7 @@ def getOutputs():
                 instClass.async = async
                 outputPlugins.append(instClass)
                 # store outputPlugins object for LCD plugin
-                if i == "LCD":
+                if i == "LCDpanel":
                     lcdPluginInstance = instClass
                 log.info("Loaded output plugin {0}".format(i))
         except Exception:
