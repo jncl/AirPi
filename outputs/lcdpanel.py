@@ -93,7 +93,8 @@ class LCDpanel(output.Output):
             return True
 
     def stopScrollers(self):
-        self.log.info("Stopping LcdScroller threads")
+        print("Stopping LcdScroller thread")
+        self.log.info("Stopping LcdScroller thread {0}".format(self.scroller.isAlive()))
         if self.scroller.isAlive():
             self.scroller.stopScroller()
             self.scroller.join()
