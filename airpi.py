@@ -215,7 +215,7 @@ def shutdownNow(pin):
 
     # stop scroller & clear LCD
     if lcdPluginInstance != None:
-        lcdPluginInstance.stopScrollers()
+        lcdPluginInstance.clearLCD()
     # stop gps controller
     if gpsPluginInstance != None:
         gpsPluginInstance.stopController()
