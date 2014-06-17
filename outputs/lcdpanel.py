@@ -53,6 +53,7 @@ class LCDpanel(output.Output):
     def outputData(self, dataPoints):
         try:
             line1_str = line2_str = line3_str = line4_str = ""
+            bl = 0
             for i in dataPoints:
                 self.log.debug(i)
                 disp_str = ""
@@ -78,6 +79,8 @@ class LCDpanel(output.Output):
                     line2_str += disp_str
                 elif i["type"] == "Light_Level":
                     line3_str += disp_str
+                    if i["value"] < 10.0:
+                        bl = 1
                 elif i["type"] == "Light_Level_Lux":
                     line3_str += disp_str
                 elif i["type"] == "Volume":
@@ -85,7 +88,7 @@ class LCDpanel(output.Output):
                 else:
                     line4_str += disp_str
             # update LcdScroller thread data
-            self.scroller.updData((line1_str, line2_str, line3_str, line4_str))
+            self.scroller.updData((line1_str, line2_str, line3_str, line4_str), bl)
 
         except Exception as e:
             self.log.error("Error displaying string on LCD: {0}".format(e))

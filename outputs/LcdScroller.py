@@ -15,6 +15,7 @@ class LcdScroller(threading.Thread):
         self.cols = cols
         self.delay = delay
         self.data = data
+        self.backlight = 1
 
     def run(self):
         self.running = True
@@ -30,8 +31,8 @@ class LcdScroller(threading.Thread):
                 else:
                     disp_str = self.data[i][start[i]:len(self.data[i])] + self.data[i][:finish[i] - len(self.data[i])]
 
-                self.log.debug(u"Display string: {0} {1}".format(disp_str, i + 1))
-                self.lcd.display_string(disp_str, i + 1)
+                self.log.debug(u"Display string: {0} {1} {2}".format(disp_str, i + 1, self.backlight))
+                self.lcd.display_string(disp_str, i + 1, bl=self.backlight)
                 start[i] += 1
                 finish[i] += 1
                 if start[i] > len(self.data[i]):
@@ -42,5 +43,6 @@ class LcdScroller(threading.Thread):
     def stopScroller(self):
         self.running = False
 
-    def updData(self, data):
+    def updData(self, data, bl):
         self.data = data
+        self.backlight = bl
