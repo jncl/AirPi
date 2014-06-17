@@ -39,11 +39,13 @@ class LCDpanel(output.Output):
         try:
             self.lcd = lcddriver.lcd()
             # setup LcdScroller thread objects
-            self.line1 = LcdScroller(self.lcd, 1, u"GPS: Unknown Unknown Unknown ")
-            self.line2 = LcdScroller(self.lcd, 2, u"Temp: Unknown, P: Unknown, RH: Unknown ")
-            self.line3 = LcdScroller(self.lcd, 3, u"LL: Unknown, LLl: Unknown, Vol: Unknown ")
-            self.line4 = LcdScroller(self.lcd, 4, u"NO2: Unknown, CO: Unknown ")
-            self.line1.start()
+            data = (u"GPS: Unknown Unknown Unknown ", u"Temp: Unknown, P: Unknown, RH: Unknown ", u"LL: Unknown, LLl: Unknown, Vol: Unknown ", u"NO2: Unknown, CO: Unknown ")
+            self.scroller = LcdScroller(self.lcd, self.rows, self.cols, data)
+            # self.line1 = LcdScroller(self.lcd, 1, u"GPS: Unknown Unknown Unknown ")
+            # self.line2 = LcdScroller(self.lcd, 2, u"Temp: Unknown, P: Unknown, RH: Unknown ")
+            # self.line3 = LcdScroller(self.lcd, 3, u"LL: Unknown, LLl: Unknown, Vol: Unknown ")
+            # self.line4 = LcdScroller(self.lcd, 4, u"NO2: Unknown, CO: Unknown ")
+            self.scroller.start()
             # self.line2.start()
             # self.line3.start()
             # self.line4.start()
@@ -99,11 +101,12 @@ class LCDpanel(output.Output):
                 # line += 1
                 # if line > self.rows:
                 #     line = 1
-            # update LcdScrolldr thread data
-            self.line1.updData(line1_str)
-            self.line2.updData(line2_str)
-            self.line3.updData(line3_str)
-            self.line4.updData(line4_str)
+            # update LcdScroller thread data
+            self.scroller.updDate((line1_str, line2_str, line3_str, line4_str))
+            # self.line1.updData(line1_str)
+            # self.line2.updData(line2_str)
+            # self.line3.updData(line3_str)
+            # self.line4.updData(line4_str)
 
         except Exception as e:
             self.log.error("Error displaying string on LCD: {0}".format(e))
@@ -113,18 +116,21 @@ class LCDpanel(output.Output):
 
     def stopScrollers(self):
         self.log.info("Stopping LcdScroller threads")
-        if self.line1.isAlive():
-            self.line1.stopScroller()
-            self.line1.join()
-        if self.line2.isAlive():
-            self.line2.stopScroller()
-            self.line2.join()
-        if self.line3.isAlive():
-            self.line3.stopScroller()
-            self.line3.join()
-        if self.line4.isAlive():
-            self.line4.stopScroller()
-            self.line4.join()
+        if self.scroller.isAlive():
+            self.scroller.stopScroller()
+            self.scroller.join()
+        # if self.line1.isAlive():
+        #     self.line1.stopScroller()
+        #     self.line1.join()
+        # if self.line2.isAlive():
+        #     self.line2.stopScroller()
+        #     self.line2.join()
+        # if self.line3.isAlive():
+        #     self.line3.stopScroller()
+        #     self.line3.join()
+        # if self.line4.isAlive():
+        #     self.line4.stopScroller()
+        #     self.line4.join()
 
         self.log.info("Clearing LCD panel & turning off backlight")
         try:
