@@ -15,7 +15,7 @@ class LcdScroller(threading.Thread):
         finish = 19
         while self.running:
             # scroll through the data
-            self.lcd.display_string(self.data[start:finish], self.line)
+            self.lcdpanel.display_string(self.data[start:finish], self.line)
             sleep(0.4)
             start += 1
             finish += 1
