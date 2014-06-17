@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 #This file takes in inputs from a variety of sensor files, and outputs information to a variety of services
 

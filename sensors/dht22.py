@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sensor
 import dhtreader
 import time

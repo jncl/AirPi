@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import output
 import os
 import lcddriver
