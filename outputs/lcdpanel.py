@@ -33,7 +33,8 @@ class LCDpanel(output.Output):
         self.blankline = " " * self.cols
         try:
             self.lcd = lcddriver.lcd()
-            self.lcd.clear(bl=0)
+            self.lcd.display_string("  Airpi LCD panel   ", 1)
+            self.lcd.display_string(" Init was a Success ", 3)
         except Exception as e:
             self.log.error("Error initialising LCDpanel: {0}".format(e))
             raise
