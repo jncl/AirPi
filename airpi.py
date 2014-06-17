@@ -383,8 +383,10 @@ def runAirPi():
 
         log.debug("Getting Inputs")
         getInputs()
+        log.debug("GPS plugin: {0}".format(gpsPluginInstance))
         log.debug("Getting Outputs")
         getOutputs()
+        log.debug("LCD plugin: {0}".format(lcdPluginInstance))
         log.debug("Getting Data")
         getData()
     except Exception:
