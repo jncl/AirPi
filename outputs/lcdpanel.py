@@ -27,7 +27,7 @@ import logging
 mod_log = logging.getLogger('airpi.lcdpanel')
 
 class LCDpanel(output.Output):
-    requiredData = ["cols", "rows"]
+    requiredData = ["cols", "rows", "delay"]
     optionalData = []
     lcd = None
 
@@ -35,13 +35,14 @@ class LCDpanel(output.Output):
         self.log = logging.getLogger('airpi.lcdpanel')
         self.cols = int(data["cols"])
         self.rows = int(data["rows"])
+        self.delay = int(data["delay"])
         try:
             self.lcd = lcddriver.lcd()
             self.lcd.display_string("  Airpi LCD panel   ", 2)
             self.lcd.display_string(" Init was a Success ", 3)
             # setup LcdScroller thread object
             data = (u"GPS: Unknown Unknown Unknown ", u"Temp: Unknown, P: Unknown, RH: Unknown ", u"LL: Unknown, LLl: Unknown, Vol: Unknown ", u"NO2: Unknown, CO: Unknown ")
-            self.scroller = LcdScroller(self.lcd, self.rows, self.cols, data)
+            self.scroller = LcdScroller(self.lcd, self.rows, self.cols, self.delay, data)
             self.scroller.start()
         except Exception as e:
             self.log.error("Error initialising LCDpanel: {0}".format(e))
