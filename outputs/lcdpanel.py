@@ -93,13 +93,14 @@ class LCDpanel(output.Output):
         else:
             return True
 
-    def stopScrollers(self):
+    def clearLCD(self):
         print("Stopping LcdScroller thread")
         self.log.info("Stopping LcdScroller thread {0}".format(self.scroller.isAlive()))
         if self.scroller.isAlive():
             self.scroller.stopScroller()
             self.scroller.join()
 
+        print("Clearing LCD panel & turning off backlight")
         self.log.info("Clearing LCD panel & turning off backlight")
         try:
             self.lcd.clear(bl=0)
