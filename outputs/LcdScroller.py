@@ -14,12 +14,12 @@ class LcdScroller(threading.Thread):
         self.rows = rows
         self.cols = cols
         self.data = data
-        self.blankline = " " * self.cols
+        # self.blankline = " " * self.cols
 
     def run(self):
         self.running = True
-        start = (0, 0, 0, 0)
-        finish = (self.cols - 1, self.cols - 1, self.cols - 1, self.cols - 1)
+        start = [0, 0, 0, 0]
+        finish = [self.cols - 1, self.cols - 1, self.cols - 1, self.cols - 1]
         while self.running:
             self.log.debug("Start/Finish: {0} {1}".format(start, finish))
             # scroll through the data
