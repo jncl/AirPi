@@ -3,6 +3,11 @@ import os
 import lcddriver
 from time import sleep
 
+try:
+    unichr = unichr
+except NameError:  # Python 3
+    unichr = chr
+
 abbr = {
     "Temperature" : "Temp",
     "Pressure" : "P",
@@ -14,8 +19,10 @@ abbr = {
     "Volume" : "Vol"
 }
 
+
 # chr(165) could be degree symbol
 # chr(223) could be degree symbol
+ds = unichr(223)
 
 # add logging support
 import logging
@@ -53,14 +60,14 @@ class LCDpanel(output.Output):
                 # handle GPS data when available
                 if i["type"] == "Location":
                     if i["lat"] > 0.0:
-                        disp_str = "GPS: {0:.2f} {1:.2f} {2}".format(i["lat"], i["lon"], i["ele"])
+                        disp_str = "GPS: {0:.3f}{1} N {2:.3f}{3} W {4}".format(i["lat"], ds, i["lon"], ds, i["ele"])
                     else:
                         continue
                 else:
                     disp_str = "{0}: {1:.2f} {2}".format(abbr[i["type"]], i["value"], i["symbol"])
                 # display data on LCD panel
+                self.lcd.display_string("Display string: {0}, {1}".format(disp_str, line)G)
                 self.log.debug(disp_str, line)
-                self.lcd.display_string(disp_str, line)
                 sleep(0.4)
                 line += 1
                 if line > self.rows:
@@ -72,8 +79,9 @@ class LCDpanel(output.Output):
             return True
 
     def clearDisplay(self, bl=0):
+        self.log.info("Clearing LCD panel & turning off backlight")
         try:
             self.lcd.clear(bl=bl)
         except Exception as e:
-            self.log.error("Error clearing LCDpanel: {0}".format(e))
+            self.log.error("Error clearing LCD panel: {0}".format(e))
             raise
