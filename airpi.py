@@ -297,9 +297,9 @@ def getData():
                         dataDict["utc"]         = val[0]
                         dataDict["lat"]         = val[1]
                         dataDict["lon"]         = val[2]
-                        dataDict["ele"]         = val[2]
-                        dataDict["domain"]      = val[3]
-                        dataDict["disposition"] = val[4]
+                        dataDict["ele"]         = val[3]
+                        dataDict["domain"]      = val[4]
+                        dataDict["disposition"] = val[5]
                         dataDict["exposure"]    = val[6]
                         dataDict["name"]        = i.locnName
                         dataDict["type"]        = i.valType
