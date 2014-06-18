@@ -36,13 +36,14 @@ class LCDpanel(output.Output):
         self.cols = int(data["cols"])
         self.rows = int(data["rows"])
         self.delay = float(data["delay"])
+        self.sl = [0, 1 ,1 ,1] # first line is static others scroll
         try:
             self.lcd = lcddriver.lcd()
             self.lcd.display_string("  Airpi LCD panel   ", 2)
             self.lcd.display_string(" Init was a Success ", 3)
             # setup LcdScroller thread object
             data = (u"Airpi Sensor Info. ", u"Temp: Unknown, P: Unknown, RH: Unknown ", u"LL: Unknown, LLl: Unknown, Vol: Unknown ", u"NO2: Unknown, CO: Unknown ")
-            self.scroller = LcdScroller(self.lcd, self.rows, self.cols, self.delay, data)
+            self.scroller = LcdScroller(self.lcd, self.rows, self.cols, self.delay, self.sl, data)
             self.scroller.start()
         except Exception as e:
             self.log.error("Error initialising LCDpanel: {0}".format(e))
@@ -59,6 +60,8 @@ class LCDpanel(output.Output):
                 disp_str = ""
                 # handle GPS data when available
                 if i["type"] == "Location":
+                    # make line 1 scroll
+                    self.sl[0] = 1
                     if i["lat"] > 0.0:
                         disp_str = u"DT: {0} {1}, Posn: {2:.3f}{3} {4:.3f}{5} Alt: {6} m ".format(i["utc"][:10], i["utc"][11:19], i["lat"], ds, i["lon"], ds, i["ele"])
                     else:
@@ -88,7 +91,7 @@ class LCDpanel(output.Output):
                 else:
                     line4_str += disp_str
             # update LcdScroller thread data
-            self.scroller.updData((line1_str, line2_str, line3_str, line4_str), bl)
+            self.scroller.updData((line1_str, line2_str, line3_str, line4_str), self.sl, bl)
 
         except Exception as e:
             self.log.error("Error displaying string on LCD: {0}".format(e))
