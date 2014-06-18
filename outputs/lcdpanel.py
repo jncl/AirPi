@@ -41,7 +41,7 @@ class LCDpanel(output.Output):
             self.lcd.display_string("  Airpi LCD panel   ", 2)
             self.lcd.display_string(" Init was a Success ", 3)
             # setup LcdScroller thread object
-            data = (u"GPS: Unknown Unknown Unknown ", u"Temp: Unknown, P: Unknown, RH: Unknown ", u"LL: Unknown, LLl: Unknown, Vol: Unknown ", u"NO2: Unknown, CO: Unknown ")
+            data = (u"Airpi Sensor Info. ", u"Temp: Unknown, P: Unknown, RH: Unknown ", u"LL: Unknown, LLl: Unknown, Vol: Unknown ", u"NO2: Unknown, CO: Unknown ")
             self.scroller = LcdScroller(self.lcd, self.rows, self.cols, self.delay, data)
             self.scroller.start()
         except Exception as e:
@@ -60,9 +60,9 @@ class LCDpanel(output.Output):
                 # handle GPS data when available
                 if i["type"] == "Location":
                     if i["lat"] > 0.0:
-                        disp_str = u"GPS: {0:.3f}{1} N {2:.3f}{3} W {4} m ".format(i["lat"], ds, i["lon"], ds, i["ele"])
+                        disp_str = u"Time: {0} {1}, Posn: {2:.3f}{3} N {4:.3f}{5} E {6} m ".format(i["utc"][:10], i["utc"][11:8], i["lat"], ds, i["lon"], ds, i["ele"])
                     else:
-                        disp_str = u"GPS: Unknown Unknown Unknown "
+                        disp_str = u"Time: Unknown Posn: Unknown "
                 elif i["type"] == "Temperature":
                     disp_str = u"{0}: {1:.2f}{2} {3} ".format(abbr[i["type"]], i["value"], ds, i["symbol"])
                 else:

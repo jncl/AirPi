@@ -270,18 +270,18 @@ def getData():
 
             curTime = time.time()
 
-            if (curTime - lastUpdated) > delayTime:
-
-                # check to see if date is set
-                log.debug("Current Time: {0}".format(curTime))
-                # if not then try to set it
-                if curTime < 5000:
-                    if gpsPluginInstance != None:
-                        gpsPluginInstance.setClock()
-                    else:
-                        Popen('/etc/init.d/settime.sh', shell=True)
+            # check to see if date is set
+            log.debug("Current Time: {0}".format(curTime))
+            # if not then try to set it
+            if curTime < 5000:
+                if gpsPluginInstance != None:
+                    gpsPluginInstance.setClock()
+                else:
+                    Popen('/etc/init.d/settime.sh', shell=True)
                     time.sleep(5)
                     continue
+
+            if (curTime - lastUpdated) > delayTime:
 
                 lastUpdated = curTime
                 data = []
@@ -294,12 +294,13 @@ def getData():
                         if isnan(val[2]): # this means it has no data to upload.
                             continue
                         # handle GPS data
-                        dataDict["lat"]         = val[0]
-                        dataDict["lon"]         = val[1]
+                        dataDict["utc"]         = val[0]
+                        dataDict["lat"]         = val[1]
+                        dataDict["lon"]         = val[2]
                         dataDict["ele"]         = val[2]
                         dataDict["domain"]      = val[3]
                         dataDict["disposition"] = val[4]
-                        dataDict["exposure"]    = val[5]
+                        dataDict["exposure"]    = val[6]
                         dataDict["name"]        = i.locnName
                         dataDict["type"]        = i.valType
                         dataDict["sensor"]      = i.sensorName
