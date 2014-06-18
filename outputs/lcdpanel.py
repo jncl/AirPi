@@ -82,7 +82,7 @@ class LCDpanel(output.Output):
                     line2_str += disp_str
                 elif i["type"] == "Light_Level":
                     line3_str += disp_str
-                    if i["value"] < 10.0:
+                    if i["value"] < float(10.0):
                         # enable backlight at low light levels
                         bl = 1
                 elif i["type"] == "Light_Level_Lux":
