@@ -67,7 +67,7 @@ class LCDpanel(output.Output):
                     else:
                         disp_str = u"DT: Unknown; Posn: Unknown; Alt: Unknown; "
                 elif i["type"] == "Temperature":
-                    disp_str = u"{0}: {1:.2f}{2} {3}; ".format(abbr[i["type"]], i["value"], ds, i["symbol"])
+                    disp_str = u"{0}: {1:.1f}{2} {3}; ".format(abbr[i["type"]], i["value"], ds, i["symbol"])
                 else:
                     disp_str = u"{0}: {1:.2f} {2}; ".format(abbr[i["type"]], i["value"], i["symbol"])
 
