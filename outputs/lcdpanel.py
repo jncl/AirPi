@@ -62,10 +62,10 @@ class LCDpanel(output.Output):
                 if i["type"] == "Location":
                     # make line 1 scroll
                     self.sl[0] = 1
-                    if i["lat"] > 0.0:
-                        disp_str = u"DT: {0} {1}; Posn: {2:.4f}{3},{4:.4f}{5}; Alt: {6} m; ".format(i["utc"][:10], i["utc"][11:19], i["lat"], ds, i["lon"], ds, i["ele"])
-                    else:
-                        disp_str = u"DT: Unknown; Posn: Unknown; Alt: Unknown; "
+                    disp_str = u"DT: Unknown; Posn: Unknown; Alt: Unknown; "
+                    if i["utc"] != None:
+                        if i["lat"] > float(0.0):
+                            disp_str = u"DT: {0} {1}; Posn: {2:.4f}{3},{4:.4f}{5}; Alt: {6} m; ".format(i["utc"][:10], i["utc"][11:19], i["lat"], ds, i["lon"], ds, i["ele"])
                 elif i["type"] == "Temperature":
                     disp_str = u"{0}: {1:.1f}{2} {3}; ".format(abbr[i["type"]], i["value"], ds, i["symbol"])
                 else:
