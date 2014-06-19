@@ -39,7 +39,7 @@ class LcdScroller(threading.Thread):
                             disp_str = self.data[i][start[i]:len(self.data[i])] + self.data[i][:finish[i] - len(self.data[i])]
                         start[i] += 1
                         finish[i] += 1
-                        if start[i] = len(self.data[i]):
+                        if start[i] == len(self.data[i]):
                             start[i] = 0
                             finish[i] = self.cols - 1
 
