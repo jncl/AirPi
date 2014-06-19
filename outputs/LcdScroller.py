@@ -24,7 +24,7 @@ class LcdScroller(threading.Thread):
         finish = [self.cols - 1, self.cols - 1, self.cols - 1, self.cols - 1]
         try:
             while self.running:
-                self.log.debug("Start/Finish: {0} {1} {2}".format(start, finish, (len(self.data[0]), len(self.data[1]), len(self.data[2]), len(self.data[3]))))
+                # self.log.debug("Start/Finish: {0} {1} {2}".format(start, finish, (len(self.data[0]), len(self.data[1]), len(self.data[2]), len(self.data[3]))))
                 # scroll through the data
                 disp_str = u""
                 for i in range(self.rows):
