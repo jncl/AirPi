@@ -22,29 +22,33 @@ class LcdScroller(threading.Thread):
         self.running = True
         start = [0, 0, 0, 0]
         finish = [self.cols - 1, self.cols - 1, self.cols - 1, self.cols - 1]
-        while self.running:
-            # self.log.debug("Start/Finish: {0} {1}".format(start, finish))
-            # scroll through the data
-            disp_str = u""
-            for i in range(self.rows):
-                # handle non scrolling data 
-                if self.sl[i] == 0:
-                    disp_str = self.data[i]
-                else:
-                    # scroll data
-                    if finish[i] <= len(self.data[i]):
-                        disp_str = self.data[i][start[i]:finish[i]]
+        try:
+            while self.running:
+                self.log.debug("Start/Finish: {0} {1}".format(start, finish))
+                # scroll through the data
+                disp_str = u""
+                for i in range(self.rows):
+                    # handle non scrolling data
+                    if self.sl[i] == 0:
+                        disp_str = self.data[i]
                     else:
-                        disp_str = self.data[i][start[i]:len(self.data[i])] + self.data[i][:finish[i] - len(self.data[i])]
-                    start[i] += 1
-                    finish[i] += 1
-                    if start[i] > len(self.data[i]):
-                        start[i] = 0
-                        finish[i] = self.cols - 1
+                        # scroll data
+                        if finish[i] <= len(self.data[i]):
+                            disp_str = self.data[i][start[i]:finish[i]]
+                        else:
+                            disp_str = self.data[i][start[i]:len(self.data[i])] + self.data[i][:finish[i] - len(self.data[i])]
+                        start[i] += 1
+                        finish[i] += 1
+                        if start[i] > len(self.data[i]):
+                            start[i] = 0
+                            finish[i] = self.cols - 1
 
-                # self.log.debug(u"Display string: {0} {1} {2}".format(disp_str, i + 1, self.backlight))
-                self.lcd.display_string(disp_str, i + 1, bl=self.backlight)
-            sleep(self.delay)
+                    self.log.debug(u"Display string: {0} {1} {2}".format(disp_str, i + 1, self.backlight))
+                    self.lcd.display_string(disp_str, i + 1, bl=self.backlight)
+                sleep(self.delay)
+        except Exception as e:
+            self.log.error("Error Scrolling lines: {0}".format(e))
+            raise
 
     def stopScroller(self):
         self.running = False
