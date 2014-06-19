@@ -42,7 +42,7 @@ class LCDpanel(output.Output):
             self.lcd.display_string("  Airpi LCD panel   ", 2)
             self.lcd.display_string(" Init was a Success ", 3)
             # setup LcdScroller thread object
-            data = (u"Airpi Sensor Info. ", u"Temp: Unknown, P: Unknown, RH: Unknown ", u"LL: Unknown, LLl: Unknown, Vol: Unknown ", u"NO2: Unknown, CO: Unknown ")
+            data = (u" Airpi Sensor Info. ", u"Temp: Unknown, P: Unknown, RH: Unknown ", u"LL: Unknown, LLl: Unknown, Vol: Unknown ", u"NO2: Unknown, CO: Unknown ")
             self.scroller = LcdScroller(self.lcd, self.rows, self.cols, self.delay, self.sl, data)
             self.scroller.start()
         except Exception as e:
