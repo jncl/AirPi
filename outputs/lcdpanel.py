@@ -109,8 +109,4 @@ class LCDpanel(output.Output):
 
         print("Clearing LCD panel & turning off backlight")
         self.log.info("Clearing LCD panel & turning off backlight")
-        try:
-            self.lcd.clear(bl=0)
-        except Exception as e:
-            self.log.error("Error clearing LCD panel: {0}".format(e))
-            raise
+        self.lcd.clear(bl=0)
