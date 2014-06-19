@@ -7,8 +7,8 @@ mod_log = logging.getLogger('airpi.LcdScroller')
 
 class LcdScroller(threading.Thread):
     def __init__(self, lcdpanel, rows, cols, delay, sl, data):
-        self.log = logging.getLogger('airpi.LcdScroller')
         threading.Thread.__init__(self)
+        self.log = logging.getLogger('airpi.LcdScroller')
         self.running = False
         self.lcd = lcdpanel
         self.rows = rows
@@ -16,7 +16,7 @@ class LcdScroller(threading.Thread):
         self.delay = delay
         self.data = data
         self.sl = sl
-        self.backlight = 1
+        self.backlight = 0
 
     def run(self):
         self.running = True
@@ -43,7 +43,7 @@ class LcdScroller(threading.Thread):
                             start[i] = 0
                             finish[i] = self.cols - 1
 
-                    self.log.debug(u"Display string: {0} {1} {2}".format(disp_str, i + 1, self.backlight))
+                    # self.log.debug(u"Display string: {0} [{1}] {2}".format(i + 1, disp_str, self.backlight))
                     self.lcd.display_string(disp_str, i + 1, bl=self.backlight)
                 sleep(self.delay)
         except Exception as e:
