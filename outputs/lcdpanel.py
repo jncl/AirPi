@@ -97,7 +97,7 @@ class LCDpanel(output.Output):
                 else:
                     line4_str += disp_str
             # update LcdScroller thread data
-            self.scroller.updData((line1_str, line2_str, line3_str, line4_str), self.sl, bl)
+            self.scroller.updData(self.sl, (line1_str, line2_str, line3_str, line4_str), bl)
 
         except Exception as e:
             self.log.error("Error displaying string on LCD: {0}".format(e))
