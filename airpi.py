@@ -304,6 +304,7 @@ def getData():
                         dataDict["domain"]      = val[4]
                         dataDict["disposition"] = val[5]
                         dataDict["exposure"]    = val[6]
+                        dataDict["m/s"]         = val[7] or None
                         dataDict["name"]        = i.locnName
                         dataDict["type"]        = i.valType
                         dataDict["sensor"]      = i.sensorName

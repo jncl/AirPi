@@ -39,7 +39,7 @@ class GPS(sensor.Sensor):
 
         # we're mobile and outside if locnName is "Mobile"
         if self.locnName == "Mobile":
-            gpsData.extend(["mobile", "outdoor"])
+            gpsData.extend(["mobile", "outdoor", self.gpsc.fix.speed])
         else:
             gpsData.extend(["fixed", "indoor"])
 
