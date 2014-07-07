@@ -215,14 +215,17 @@ def shutdownNow(pin):
     print("shutdownNow triggered: {0}".format(pin))
     log.info("shutdownNow triggered: {0}".format(pin))
 
-    # stop scroller & clear LCD
-    if lcdPluginInstance != None:
-        lcdPluginInstance.clearLCD()
-    # stop gps controller
-    if gpsPluginInstance != None:
-        gpsPluginInstance.stopController()
-    # Shutdown the logging system
-    logging.shutdown()
+    try:
+        # stop scroller & clear LCD
+        if lcdPluginInstance != None:
+            lcdPluginInstance.clearLCD()
+        # stop gps controller
+        if gpsPluginInstance != None:
+            gpsPluginInstance.stopController()
+        # Shutdown the logging system
+        logging.shutdown()
+    except:
+        pass
 
     Popen('/usr/bin/exitcheck.sh shutdown', shell=True) # shutdown system
     sys.exit(1)
