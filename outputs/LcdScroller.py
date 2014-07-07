@@ -14,17 +14,17 @@ class LcdScroller(threading.Thread):
         self.rows = rows
         self.cols = cols
         self.delay = delay
-        self.data = data
         self.sl = sl
-        self.backlight = 0
+        self.data = data
+        self.bl = 0
 
     def run(self):
         self.running = True
-        start = [0, 0, 0, 0]
-        finish = [self.cols - 1, self.cols - 1, self.cols - 1, self.cols - 1]
+        start = [0] * self.rows
+        finish = [self.cols - 1] * self.rows
         try:
             while self.running:
-                # self.log.debug("Start/Finish: {0} {1} {2}".format(start, finish, (len(self.data[0]), len(self.data[1]), len(self.data[2]), len(self.data[3]))))
+                # self.log.debug("Start/Finish: {0} {1} {2}".format(start, finish, map(len, data)))
                 # scroll through the data
                 disp_str = u""
                 for i in range(self.rows):
@@ -43,8 +43,8 @@ class LcdScroller(threading.Thread):
                             start[i] = 0
                             finish[i] = self.cols - 1
 
-                    # self.log.debug(u"Display string: {0} [{1}] {2}".format(i + 1, disp_str, self.backlight))
-                    self.lcd.display_string(disp_str, i + 1, bl=self.backlight)
+                    # self.log.debug(u"Display string: {0} [{1}] {2}".format(i + 1, disp_str, self.bl))
+                    self.lcd.display_string(disp_str, i + 1, bl=self.bl)
                 sleep(self.delay)
         except Exception as e:
             self.log.error("Error Scrolling lines: {0}".format(e))
@@ -53,7 +53,7 @@ class LcdScroller(threading.Thread):
     def stopScroller(self):
         self.running = False
 
-    def updData(self, data, sl, bl):
-        self.data = data
+    def updData(self, sl, data, bl):
         self.sl = sl
-        self.backlight = bl
+        self.data = data
+        self.bl = bl
