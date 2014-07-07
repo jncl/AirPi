@@ -10,8 +10,9 @@ except NameError:  # Python 3
 
 # chr(223) is the degree symbol on LCD panel
 ds = unichr(223)
-# 1 m/s ~= 2.2369 mph
-mph_mult=2.2369
+# conversion multipliers
+mph_mult = 2.23694
+ft_mult = 3.28084
 
 abbr = {
     "Temperature" : "Temp",
@@ -68,7 +69,7 @@ class LCDpanel(output.Output):
                     if i["utc"] != None:
                         if i["lat"] > float(0.0):
                             if i["m/s"] != None:
-                                disp_str = u"DT: {0}-{1}-{2} {3}; Posn: {4:.4f}, {5:.4f}; Alt: {6} m; Speed: {7:.1f} mph; ".format(i["utc"][8:10], i["utc"][5:7], i["utc"][2:4], i["utc"][11:16], i["lat"], i["lon"], i["ele"], i["m/s"] * mph_mult)
+                                disp_str = u"DT: {0}-{1}-{2} {3} UTC; {4:.4f}, {5:.4f} DD; Alt: {6} ft; Speed: {7:.1f} mph; ".format(i["utc"][8:10], i["utc"][5:7], i["utc"][2:4], i["utc"][11:16], i["lat"], i["lon"], i["ele"] * ft_mult, i["m/s"] * mph_mult)
                             else:
                                 disp_str = u"DT: {0} {1}; Posn: {2:.4f}, {3:.4f}; Alt: {4} m; ".format(i["utc"][:10], i["utc"][11:19], i["lat"], i["lon"], i["ele"])
                 elif i["type"] == "Temperature":
