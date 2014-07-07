@@ -68,7 +68,7 @@ class LCDpanel(output.Output):
                     if i["utc"] != None:
                         if i["lat"] > float(0.0):
                             if i["m/s"] != None:
-                                disp_str = u"DT: {0} {1}; Posn: {2:.4f}, {3:.4f}; Alt: {4} m; Speed: {5:.1f} mph; ".format(i["utc"][:10], i["utc"][11:16], i["lat"], i["lon"], i["ele"], i["m/s"] * mph_mult)
+                                disp_str = u"DT: {0}-{1}-{2} {3}; Posn: {4:.4f}, {5:.4f}; Alt: {6} m; Speed: {7:.1f} mph; ".format(i["utc"][9:10], i["utc"][6:7], i["utc"][2:4], i["utc"][11:16], i["lat"], i["lon"], i["ele"], i["m/s"] * mph_mult)
                             else:
                                 disp_str = u"DT: {0} {1}; Posn: {2:.4f}, {3:.4f}; Alt: {4} m; ".format(i["utc"][:10], i["utc"][11:19], i["lat"], i["lon"], i["ele"])
                 elif i["type"] == "Temperature":
