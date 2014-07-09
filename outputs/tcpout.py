@@ -1,7 +1,6 @@
 # based upon code from http://logic.sysbiol.cam.ac.uk/?p=1423
 import output
 import socket
-import json
 import errno, time
 
 # add logging support
@@ -32,7 +31,7 @@ class TCPout(output.Output):
                 else:
                     arr.append({"id": i["type"], "current_value": i["value"]})
 
-            a = json.dumps({"version": "1.0.0", "datastreams": arr, "location": l})
+            a = {"datastreams": arr, "location": l}
             self.log.debug("Output string: [{0}], {1}".format(a, len(a)))
 
             # send data over TCP socket
