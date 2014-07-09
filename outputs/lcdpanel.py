@@ -63,10 +63,10 @@ class LCDpanel(output.Output):
                 disp_str = ""
                 # handle GPS data when available
                 if i["type"] == "Location":
-                    # make line 1 scroll
-                    self.sl[0] = 1
-                    disp_str = u"DT: Unknown; Posn: Unknown; Alt: Unknown; "
+                    disp_str = u"Location: Unknown; "
                     if i["utc"] != None:
+                        # make line 1 scroll
+                        self.sl[0] = 1
                         if i["lat"] > float(0.0):
                             if i["m/s"] != None:
                                 disp_str = u"{0}-{1}-{2} {3} UTC; {4:.4f},{5:.4f} DD; {6:.1f} ft; {7:.1f} mph; ".format(i["utc"][8:10], i["utc"][5:7], i["utc"][2:4], i["utc"][11:16], i["lat"], i["lon"], i["ele"] * ft_mult, i["m/s"] * mph_mult)
