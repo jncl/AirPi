@@ -16,11 +16,10 @@ class TCPout(output.Output):
         self.log = logging.getLogger('airpi.tcpout')
         self.host = data["host"]
         self.port = int(data["port"])
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def outputData(self,dataPoints):
         arr = []
-        a = l = z = None
+        a = l = s = z = None
         try:
             for i in dataPoints:
                 self.log.debug(i)
@@ -40,9 +39,11 @@ class TCPout(output.Output):
             cnt = 0
             while cnt < 3:
                 try:
-                    self.socket.connect((self.host, self.port))
-                    z = self.socket.send(a)
-                    self.socket.close()
+                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    s.connect((self.host, self.port))
+                    z = s.send(a)
+                    s.close()
+                    self.log.debug("Bytes sent: {0}".format(z))
                 except Exception as e:
                     if e.errno == errno.ECONNREFUSED:
                         time.sleep(0.5)
@@ -52,7 +53,6 @@ class TCPout(output.Output):
                 else:
                     cnt = 99
 
-            self.log.debug("Bytes sent: {0}".format(z))
         except Exception as e:
             self.log.error("Error during processing: {0}".format(e))
             raise
