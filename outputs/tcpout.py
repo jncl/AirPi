@@ -1,6 +1,7 @@
 # based upon code from http://logic.sysbiol.cam.ac.uk/?p=1423
 import output
 import socket
+import json
 
 # add logging support
 import logging
