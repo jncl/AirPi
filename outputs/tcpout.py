@@ -43,7 +43,7 @@ class TCPout(output.Output):
                     z = s.send(a)
                     s.close()
                     self.log.debug("Bytes sent: {0}".format(z))
-                except Exception as e:
+                except socket.error as e:
                     if e.errno == errno.ECONNREFUSED:
                         time.sleep(0.5)
                         cnt += 1
