@@ -301,10 +301,10 @@ def getData():
                         dataDict["lat"]         = val[1]
                         dataDict["lon"]         = val[2]
                         dataDict["ele"]         = val[3]
-                        dataDict["domain"]      = val[4]
-                        dataDict["disposition"] = val[5]
-                        dataDict["exposure"]    = val[6]
-                        dataDict["m/s"]         = val[7] or None
+                        dataDict["m/s"]         = val[4]
+                        dataDict["domain"]      = val[5]
+                        dataDict["disposition"] = val[6]
+                        dataDict["exposure"]    = val[7]
                         dataDict["name"]        = i.locnName
                         dataDict["type"]        = i.valType
                         dataDict["sensor"]      = i.sensorName

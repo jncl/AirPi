@@ -36,11 +36,11 @@ class GPS(sensor.Sensor):
             raise
 
     def getVal(self):
-        gpsData = [self.gpsc.utc, self.gpsc.fix.latitude, self.gpsc.fix.longitude, self.gpsc.fix.altitude, "physical"]
+        gpsData = [self.gpsc.utc, self.gpsc.fix.latitude, self.gpsc.fix.longitude, self.gpsc.fix.altitude, self.gpsc.fix.speed, "physical"]
 
         # we're mobile and outside if locnName is "Mobile"
         if self.locnName == "Mobile":
-            gpsData.extend(["mobile", "outdoor", self.gpsc.fix.speed])
+            gpsData.extend(["mobile", "outdoor"])
         else:
             gpsData.extend(["fixed", "indoor"])
 
