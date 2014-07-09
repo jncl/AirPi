@@ -12,7 +12,7 @@ class TCPout(output.Output):
 
     def __init__(self,data):
         self.log = logging.getLogger('airpi.tcpout')
-        self.host = int(data["host"])
+        self.host = data["host"]
         self.port = int(data["port"])
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
