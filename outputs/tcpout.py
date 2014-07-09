@@ -2,6 +2,7 @@
 import output
 import socket
 import json
+import errno, time
 
 # add logging support
 import logging
@@ -36,9 +37,21 @@ class TCPout(output.Output):
             self.log.debug("Output string: [{0}], {1}".format(a, len(a)))
 
             # send data over TCP socket
-            self.socket.connect((self.host, self.port))
-            z = self.socket.send(a)
-            self.socket.close()
+            cnt = 0
+            while cnt < 3:
+                try:
+                    self.socket.connect((self.host, self.port))
+                    z = self.socket.send(a)
+                    self.socket.close()
+                except Exception as e:
+                    if e.errno == errno.ECONNREFUSED:
+                        time.sleep(0.5)
+                        cnt += 1
+                    else:
+                        raise
+                else:
+                    cnt = 99
+
             self.log.debug("Bytes sent: {0}".format(z))
         except Exception as e:
             self.log.error("Error during processing: {0}".format(e))
