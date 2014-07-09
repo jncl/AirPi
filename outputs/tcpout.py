@@ -18,7 +18,8 @@ class TCPout(output.Output):
 
     def outputData(self,dataPoints):
         arr = []
-        a = l = s = z = None
+        datastr = ""
+        l = s = z = None
         try:
             for i in dataPoints:
                 self.log.debug(i)
@@ -31,7 +32,9 @@ class TCPout(output.Output):
                 else:
                     arr.append({"id": i["type"], "current_value": i["value"]})
 
-            a = {"datastreams": arr, "location": l}
+            # a = {"datastreams": arr, "location": l}
+            datastr = ', '.join("{!s}={!r}".format(k, v) for (k, v) in arr.iteritems())
+            datastr += ', '.join("{!s}={!r}".format(k, v) for (k, v) in l.iteritems())
             self.log.debug("Output string: [{0}], {1}".format(a, len(a)))
 
             # send data over TCP socket
@@ -40,7 +43,7 @@ class TCPout(output.Output):
                 try:
                     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     s.connect((self.host, self.port))
-                    z = s.send(a)
+                    z = s.send(datastr)
                     s.close()
                     self.log.debug("Bytes sent: {0}".format(z))
                 except socket.error as e:
