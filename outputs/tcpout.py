@@ -33,7 +33,7 @@ class TCPout(output.Output):
                     arr.append({"id": i["type"], "current_value": i["value"]})
 
             # a = {"datastreams": arr, "location": l}
-            datastr = ', '.join("{!s}={!r}".format(k, v) for (k, v) in arr.iteritems())
+            datastr = ','.join("{!s}={!r}".format(k, v) for (k, v) in myList)
             datastr += ', '.join("{!s}={!r}".format(k, v) for (k, v) in l.iteritems())
             self.log.debug("Output string: [{0}], {1}".format(a, len(a)))
 
