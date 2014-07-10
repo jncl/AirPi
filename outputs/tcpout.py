@@ -26,7 +26,7 @@ class TCPout(output.Output):
                 if i["type"] == "Location":
                     datastr = datastr + "Lat={!r},Long={!r},Elev={!r},Speed={!r},Time={!r},".format(i["lat"], i["lon"], i["ele"], i["m/s"],i["utc"])
                 else:
-                    datastr = datastr + ','.join("{!s}={!r}".format(i["type"], i["value"]))
+                    datastr = datastr + "{!s}={!r}".format(i["type"], i["value"])
 
             self.log.debug("Output string: [{0}], {1}".format(datastr, len(datastr)))
 
