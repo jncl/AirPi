@@ -35,7 +35,7 @@ class TCPout(output.Output):
             # a = {"datastreams": arr, "location": l}
             datastr = ','.join("{!s}={!r}".format(k, v) for (k, v) in arr)
             datastr += ', '.join("{!s}={!r}".format(k, v) for (k, v) in l.iteritems())
-            self.log.debug("Output string: [{0}], {1}".format(a, len(a)))
+            self.log.debug("Output string: [{0}], {1}".format(datastr, len(datastr)))
 
             # send data over TCP socket
             cnt = 0
