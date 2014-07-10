@@ -23,7 +23,10 @@ class TCPout(output.Output):
         try:
             for i in dataPoints:
                 self.log.debug(i)
-                datastr += ','.join("{!s}={!r}".format(k, v) for (k, v) in i)
+                if i["type"] == "Location":
+                    datastr += ','.join("Lat={},Long={},Elev={},Speed={},Time={}".format(i["lat"], i["lon"], i["ele"], i["m/s"],i["utc"]))
+                else:
+                    datastr += ','.join("{}={}".format(i["type"], i["value"]))
 
             self.log.debug("Output string: [{0}], {1}".format(datastr, len(datastr)))
 
