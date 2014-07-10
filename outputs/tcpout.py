@@ -18,15 +18,15 @@ class TCPout(output.Output):
 
     def outputData(self,dataPoints):
         arr = []
-        datastr = ""
+        datastr = ''
         s = z = None
         try:
             for i in dataPoints:
                 self.log.debug(i)
                 if i["type"] == "Location":
-                    datastr += ','.join("Lat={},Long={},Elev={},Speed={},Time={}".format(i["lat"], i["lon"], i["ele"], i["m/s"],i["utc"]))
+                    datastr += ''.join("Lat={!r},Long={!r},Elev={!r},Speed={!r},Time={!r},".format(i["lat"], i["lon"], i["ele"], i["m/s"],i["utc"]))
                 else:
-                    datastr += ','.join("{}={}".format(i["type"], i["value"]))
+                    datastr += ','.join("{!s}={!r}".format(i["type"], i["value"]))
 
             self.log.debug("Output string: [{0}], {1}".format(datastr, len(datastr)))
 
