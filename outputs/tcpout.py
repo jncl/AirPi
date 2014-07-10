@@ -19,22 +19,12 @@ class TCPout(output.Output):
     def outputData(self,dataPoints):
         arr = []
         datastr = ""
-        l = s = z = None
+        s = z = None
         try:
             for i in dataPoints:
                 self.log.debug(i)
-                # handle GPS data
-                if i["type"] == "Location":
-                    l = dict(i)
-                    # remove elements not required by Xively
-                    del l["type"]
-                    del l["sensor"]
-                else:
-                    arr.append({"id": i["type"], "current_value": i["value"]})
+                datastr += ','.join("{!s}={!r}".format(k, v) for (k, v) in i)
 
-            # a = {"datastreams": arr, "location": l}
-            datastr = ','.join("{!s}={!r}".format(k, v) for (k, v) in arr)
-            datastr += ', '.join("{!s}={!r}".format(k, v) for (k, v) in l.iteritems())
             self.log.debug("Output string: [{0}], {1}".format(datastr, len(datastr)))
 
             # send data over TCP socket
