@@ -49,7 +49,7 @@ class LCDpanel(output.Output):
             self.scroller = LcdScroller(self.lcd, self.rows, self.cols, self.delay, self.sl, data)
             self.scroller.start()
         except Exception as e:
-            self.log.error("Error initialising LCDpanel: {0}".format(e))
+            self.log.error("Error initialising LCDpanel: {}".format(e))
             raise
         else:
             self.log.debug("Initialised successfully")
@@ -69,13 +69,13 @@ class LCDpanel(output.Output):
                         self.sl[0] = 1
                         if i["lat"] > float(0.0):
                             if i["m/s"] != None:
-                                disp_str = u"{0}-{1}-{2} {3} UTC; {4:.4f},{5:.4f} DD; {6:.1f} ft; {7:.1f} mph; ".format(i["utc"][8:10], i["utc"][5:7], i["utc"][2:4], i["utc"][11:16], i["lat"], i["lon"], i["ele"] * ft_mult, i["m/s"] * mph_mult)
+                                disp_str = u"{}-{}-{} {} UTC; {:.4f}{},{:.4f}{}; {:.1f} ft; {:.1f} mph; ".format(i["utc"][8:10], i["utc"][5:7], i["utc"][2:4], i["utc"][11:16], i["lat"], ds, i["lon"], ds, i["ele"] * ft_mult, i["m/s"] * mph_mult)
                             else:
-                                disp_str = u"DT: {0} {1}; Posn: {2:.4f}, {3:.4f}; Alt: {4} m; ".format(i["utc"][:10], i["utc"][11:19], i["lat"], i["lon"], i["ele"])
+                                disp_str = u"DT: {} {}; Posn: {:.4f}{}, {:.4f}{}; Alt: {} m; ".format(i["utc"][:10], i["utc"][11:19], i["lat"], ds, i["lon"], ds, i["ele"])
                 elif i["type"] == "Temperature":
-                    disp_str = u"{0}: {1:.1f}{2}{3}; ".format(abbr[i["type"]], i["value"], ds, i["symbol"])
+                    disp_str = u"{}: {:.1f}{}{}; ".format(abbr[i["type"]], i["value"], ds, i["symbol"])
                 else:
-                    disp_str = u"{0}: {1:.2f} {2}; ".format(abbr[i["type"]], i["value"], i["symbol"])
+                    disp_str = u"{}: {:.2f} {}; ".format(abbr[i["type"]], i["value"], i["symbol"])
 
                 # add to correct line string
                 if i["type"] == "Location":
@@ -101,14 +101,14 @@ class LCDpanel(output.Output):
             self.scroller.updData(self.sl, (line1_str, line2_str, line3_str, line4_str), bl)
 
         except Exception as e:
-            self.log.error("Error displaying string on LCD: {0}".format(e))
+            self.log.error("Error displaying string on LCD: {}".format(e))
             raise
         else:
             return True
 
     def clearLCD(self):
         print("Stopping LcdScroller thread")
-        self.log.info("Stopping LcdScroller thread {0}".format(self.scroller.isAlive()))
+        self.log.info("Stopping LcdScroller thread {}".format(self.scroller.isAlive()))
         if self.scroller.isAlive():
             self.scroller.stopScroller()
             self.scroller.join()
